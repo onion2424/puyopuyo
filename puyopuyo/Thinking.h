@@ -35,6 +35,11 @@ public:
 		std::vector<int> temp(128);
 		tsumo.swap(temp);
 
+		//評価用に重みを設定（良い感じにしているつもり）  //いずれはあぷり側でいじりたい
+		fireHeight_W = 100;  //	発火地点の高さの重み
+		chain_W = 1000;  //			連鎖数の重み
+		field_W = 10; //			形の重み
+
 	};
 
 	//実行するもの
@@ -81,7 +86,7 @@ public:
 	const __m128i vanish13 = _mm_set_epi64x(0x0000000400040004, 0x0004000400040000); //13段目にビットが立っている
 	const __m128i vanishOther = _mm_set_epi64x(0x00007ff87ff87ff8, 0x7ff87ff87ff80000);
 	// 7ff8
-	// フィールド14マス
+	// フィールド14マス　14、13段目以外にビットが立っている状態
 	// |--------------|
 	//0 11111111111100 0
 
@@ -104,9 +109,9 @@ public:
 
 	//*************評価*************
 	//	評価値用
-	int chainHeight_W = 0;  //	発火地点の高さの重み
-	int chain_W = 0;  //			連鎖数の重み
-	int field_W = 0;  //			形の重み
+	int fireHeight_W;  //	発火地点の高さの重み
+	int chain_W;  //			連鎖数の重み
+	int field_W;  //			形の重み
 
 	//	評価値計算
 	int evalScore(int chainMax_ready, int fireHeight);

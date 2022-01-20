@@ -483,8 +483,8 @@ int Thinking::evalScore(int chainMax_ready, int fireHeight) {
 	heightValue += (heightAve + 2 - fieldHeight_image[5]) * (heightAve + 2 - fieldHeight_image[5]);
 
 	//評価値実計算部分（重みは適当）
-	evalVal = -heightValue * 10;
-	evalVal += chainMax_ready * (1000 * (heightAve + 1) / 10) + (100 * fireHeight);
+	evalVal = -heightValue * field_W;
+	evalVal += chainMax_ready * (chain_W * (heightAve + 1) / 10) + (fireHeight_W * fireHeight);
 	return evalVal;
 }
 
