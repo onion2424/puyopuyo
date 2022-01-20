@@ -144,7 +144,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="framework.h" />
-    <ClInclude Include="parallel.h" />
+    <ClInclude Include="puyopuyo.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="targetver.h" />
     <ClInclude Include="Thinking.h" />
@@ -154,11 +154,11 @@
     <ClCompile Include="Thinking.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ResourceCompile Include="parallel.rc" />
+    <Image Include="puyopuyo.ico" />
+    <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="parallel.ico" />
-    <Image Include="small.ico" />
+    <ResourceCompile Include="puyopuyo.rc" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

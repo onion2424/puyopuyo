@@ -1,4 +1,4 @@
-﻿// parallel.cpp : アプリケーションのエントリ ポイントを定義します。
+﻿// puyopuyo.cpp : アプリケーションのエントリ ポイントを定義します。
 //
 
 #include "framework.h"
