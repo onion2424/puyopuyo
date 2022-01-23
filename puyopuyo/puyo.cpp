@@ -410,17 +410,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	{
 
 		GetClientRect(hWnd, &cx);
-		//ビットマップがあったら画面に転送
+		//ビットマップを画面に転送
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
-		
 		paint();
 		BitBlt(hdc, 0, 0, cx.right, cx.bottom, hdcMem, 0, 0, SRCCOPY);
-		SetBkColor(hdc, RGB(255, 255, 255));
 		EndPaint(hWnd, &ps);
 		
-		//描画処理
-		paint();
 	}
 	break;
 	case WM_DESTROY:
