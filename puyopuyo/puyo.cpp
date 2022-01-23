@@ -57,7 +57,7 @@ int pat[22];
 //死亡判定
 bool isDie = false;
 
-bool isFieldChange = false; //排他制御
+volatile bool isFieldChange = false; //排他制御
 
 //表示用
 int nowChain;
@@ -69,6 +69,7 @@ void makeTsumo(std::vector<int>& tsumo);
 void fallTsumo(int field[8][16], std::vector<int> tsumo, int controll);
 void fieldChange(__m128i reg1, __m128i reg2, __m128i reg3, int field[][16]);
 bool chain(int field[][16], bool); //連鎖後のフィールドを返す
+bool isChain(int field[][16]);
 LPTSTR convertVal(int val); //数値を出力するために変換
 int getAmount();
 
@@ -86,7 +87,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// TODO: ここにコードを挿入してください。
 	//ツモ初期化
 	makeTsumo(tsumo);
 
@@ -137,16 +137,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 		{
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
-		}
-		//連鎖確認
-		while (chain(nowField, true)) {
-			//再描画
-
-			std::this_thread::sleep_for(std::chrono::milliseconds(800));
-			nowChain++;
-			InvalidateRect(hWnd, NULL, false);
-			paint();
-
 		}
 
 	}
@@ -256,7 +246,8 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		case WEIGHT: { // todo2 ) 重みを変えたい
 			break;
 		}
-		case CHANGE: { // todo1 ) 操作手,ターンリセットしたほうがいいかも
+		case CHANGE: {
+			if (isFieldChange) break;
 			makeTsumo(tsumo);
 			InvalidateRect(hWnd, NULL, false);
 			break;
@@ -325,6 +316,22 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 				//操作(フィールド変化)
 				fallTsumo(nowField, tsumo, res);
+
+				//連鎖確認
+				if (isChain(nowField)) { //ちらつき防止用にチェックしてから再描画
+					//つもを置いた手を描画する
+					InvalidateRect(hWnd, NULL, false);
+					paint();
+					while (chain(nowField, true)) {
+						std::this_thread::sleep_for(std::chrono::milliseconds(600)); //連鎖を追えるように
+						//再描画
+						InvalidateRect(hWnd, NULL, false);
+						paint();
+						nowChain++;
+
+					}
+				}
+
 			}
 			else {
 				isDie = true;
@@ -386,6 +393,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_PAINT:
 	{
+		//描画処理
 		paint();
 	}
 	break;
@@ -870,10 +878,153 @@ void fieldChange(__m128i reg1, __m128i reg2, __m128i reg3, int field[][16]) {
 	}
 }
 
+
+//連鎖があるかを確認する
+bool isChain(int field[][16]) {
+
+	//配列からビットに変換
+	unsigned long long llA, llB, llC;
+	llA = llB = llC = 0;
+	for (int i = 0; i < 4; i++) {
+		for (int j = 0; j < 16; j++) {
+			(llA <<= 1) ^= (0b1 & field[i][j]);
+			(llB <<= 1) ^= ((0b10 & field[i][j]) >> 1);
+			(llC <<= 1) ^= ((0b100 & field[i][j]) >> 2);
+		}
+	}
+	unsigned long long llA2, llB2, llC2;
+	llA2 = llB2 = llC2 = 0;
+	for (int i = 4; i < 8; i++) {
+		for (int j = 0; j < 16; j++) {
+			(llA2 <<= 1) ^= (0b1 & field[i][j]);
+			(llB2 <<= 1) ^= ((0b10 & field[i][j]) >> 1);
+			(llC2 <<= 1) ^= ((0b100 & field[i][j]) >> 2);
+		}
+	}
+
+	unsigned int mask[] = { 0xffff, 0xfffe, 0xfffc, 0xfff8, 0xfff0, 0xffe0, 0xffc0, 0xff80, 0xff00, 0xfe00, 0xfc00, 0xf800, 0xf000, 0xe000 }; //列のツモ数に応じた、全ツモが下に落ちたときの位置
+
+	__m128i field1 = _mm_set_epi64x(llA, llA2);
+	__m128i field2 = _mm_set_epi64x(llB, llB2);
+	__m128i field3 = _mm_set_epi64x(llC, llC2);
+
+	//__m128i ojama = _mm_and_si128(reg1, _mm_and_si128(reg2, reg3));
+	__m128i colorReg;
+	__m128i tmpRegV;
+	__m128i tmpRegH;
+	__m128i sheedV;
+	__m128i sheedH;
+	__m128i linkOne;
+	__m128i linkTwo;
+	__m128i sheed;
+	__m128i vanish = _mm_setzero_si128();
+	__m128i pdepMask;
+	__m128i pextMask;
+	__m128i thirteen[3];
+	__m128i vanish13 = _mm_set_epi64x(0x0000000400040004, 0x0004000400040000); //13段目にビットが立っている
+	__m128i vanishOther = _mm_set_epi64x(0x00007ff87ff87ff8, 0x7ff87ff87ff80000);
+
+	uint16_t* cnt = (uint16_t*)&vanish;
+	uint64_t* pdepMaskPtr = (uint64_t*)&pdepMask;
+	uint64_t* pextMaskPtr = (uint64_t*)&pextMask;
+	uint64_t* fieldPtr1 = (uint64_t*)&field1;
+	uint64_t* fieldPtr2 = (uint64_t*)&field2;
+	uint64_t* fieldPtr3 = (uint64_t*)&field3;
+	uint64_t* vanishPtr = (uint64_t*)&vanish;
+
+
+	//連鎖数を返す
+	int count = 0;
+	while (true) {
+		//13段目の情報を保存
+		//その後、フィールド(1～12段目)以外の情報を消す
+		thirteen[0] = _mm_and_si128(vanish13, field1);
+		thirteen[1] = _mm_and_si128(vanish13, field2);
+		thirteen[2] = _mm_and_si128(vanish13, field3);
+		field1 = _mm_and_si128(vanishOther, field1);
+		field2 = _mm_and_si128(vanishOther, field2);
+		field3 = _mm_and_si128(vanishOther, field3);
+
+		for (int color = 1; color < 5; color++) {
+			switch (color) {
+			case 1: colorReg = _mm_andnot_si128(field3, _mm_andnot_si128(field2, field1)); break;//赤
+			case 2: colorReg = _mm_andnot_si128(field3, _mm_andnot_si128(field1, field2)); break;//緑
+			case 3: colorReg = _mm_andnot_si128(field3, _mm_and_si128(field1, field2)); break;//青
+			case 4: colorReg = _mm_andnot_si128(field2, _mm_andnot_si128(field1, field3)); break;//黄色
+			case 5: colorReg = _mm_andnot_si128(field2, _mm_and_si128(field1, field3)); break; //紫
+			}
+
+			//1連結のツモを探す
+			//  上下どちらかに同じ色があるツモが存在する位置にビットを立てる
+			//	tmpRegV : 1つ上にずらしたフィールドとand　-> 1なら下にツモがあることになる
+			//	sheedV	: tmpRegVのフィールドを下にずらしてxor -> 下のやつも1を立てる (左右にも繋がっているのは0に戻る)
+			tmpRegV = _mm_and_si128(colorReg, _mm_slli_epi16(colorReg, 1));
+			sheedV = _mm_xor_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1));
+			//			↑xorは左右片方だけ繋がっている					
+			//	左右どちらかに同じ色があるツモが存在する位置にビットを立てる
+			//	tmpRegH : 1つ左にずらしたフィールドとand -> 1なら右にツモがあることになる
+			//	sheedH	: tmpRegHのフィールドを左にずらしてxor -> 右のやつも1を立てる (左右にも繋がっているのは0に戻る)
+			tmpRegH = _mm_and_si128(colorReg, _mm_slli_si128(colorReg, 2));
+			sheedH = _mm_xor_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2));
+			//　連結1のツモ位置にビットを立てる
+			//	左右どちらか　か　上下どちらか　だけビットを立てる
+			linkOne = _mm_xor_si128(sheedV, sheedH);
+
+
+			//  2連結のツモを探す
+			//	2つ同じ色が連結しているツモが存在する位置にビットを立てる　（3つは除く） 条件は↓の3つ
+			//						縦横両方繋がっている			or			横が繋がらず上下両方に繋がっているやつ										or					縦が繋がらず左右両方に繋がっているやつ				
+			linkTwo = _mm_or_si128(_mm_and_si128(sheedV, sheedH), _mm_or_si128(_mm_andnot_si128(sheedV, _mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2))), _mm_andnot_si128(sheedH, _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1)))));
+			//																								↑andは両方つながってる														↑andは両方つながってる
+
+
+			//  3連結以上のツモを探す
+			//	3つ以上同じ色が連結しているツモが存在する位置にビットを立てる																			
+			//						4連結の条件→				（上下繋がっている　　　　　　　　　かつ　　　　　　　左右繋がっている　						or	→3連結の条件　(上下両方が繋がってる and   左右どちらかに繋がってる)				or		(左右両方に繋がっている   and  上下どちらかに繋がっている)															
+			sheed = _mm_or_si128(_mm_and_si128(_mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2)), _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1))), _mm_or_si128(_mm_and_si128(sheedV, _mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2))), _mm_and_si128(sheedH, _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1)))));
+			//											↑andは両方つながってる								↑andは両方つながってる																	↑andは両方つながってる														↑andは両方つながってる
+
+
+
+			//	シード（消えるきっかけ）の位置にビットを立てる
+			//	条件 = 連結3以上の奴 or 隣接の連結が2以上の連結2の奴
+			//	
+			//	連結2以上のやつ
+			linkTwo = _mm_or_si128(sheed, linkTwo);
+			//										   
+			//	tmpRegV : 2連結以上が左右のどちらかあるいは両方繋がっているやつ
+			tmpRegV = _mm_and_si128(linkTwo, _mm_slli_epi16(linkTwo, 1));
+			tmpRegV = _mm_or_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1));
+			//			↑orは少なくとも片方は繋がってる
+			//	tmpRegH : 2連結以上が上下のどちらかあるいは両方繋がっているやつ 
+			tmpRegH = _mm_and_si128(linkTwo, _mm_slli_si128(linkTwo, 2));
+			tmpRegH = _mm_or_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2));
+			//			↑orは少なくとも片方は繋がってる
+			//	シードは			3連結以上	or	2連結以上しているツモが隣り合っている場所
+			sheed = _mm_or_si128(sheed, _mm_or_si128(tmpRegV, tmpRegH));
+
+
+
+			//	シードに隣接する連結1も消える  _mm_xor_si128(sheedV, sheedH)は連結1　（シードを上下左右にずらして連結１の位置とandをとる）
+			//	tmpRegV : シード + シードの上下に連結している連結1のツモの位置		↓シードを上にずらす													↓シードを下にずらす
+			//	tmpRegH : シード + シードの左右に連結している連結1のツモの位置		↓シードを左にずらす													↓シードを右にずらす
+			tmpRegV = _mm_or_si128(_mm_and_si128(linkOne, _mm_slli_epi16(sheed, 1)), _mm_and_si128(linkOne, _mm_srli_epi16(sheed, 1)));
+			tmpRegH = _mm_or_si128(_mm_and_si128(linkOne, _mm_slli_si128(sheed, 2)), _mm_and_si128(linkOne, _mm_srli_si128(sheed, 2)));
+			sheed = _mm_or_si128(sheed, _mm_or_si128(tmpRegV, tmpRegH));
+			vanish = _mm_or_si128(sheed, vanish); //4色見て最終的には消える位置全て１が立っている
+		}
+		//vanishが0なら抜けたい
+
+		if ((vanishPtr[0] | vanishPtr[1]) == 0) {
+			return false;
+		}
+		return true;
+	}
+}
+
 //連鎖表示用
 bool chain(int field[][16], bool isPaint)
 {
-	if (isPaint && isFieldChange) return false;
 
 	//配列からビットに変換
 	unsigned long long llA, llB, llC;
