@@ -44,6 +44,10 @@ HWND hwnd_button_reset;  //リセットボタン
 HWND hwnd_button_change;  //変更ボタン
 HWND hWnd;
 HBRUSH hOldBrush;
+HBITMAP hBitmap;
+HDC     hdcMem;
+RECT rx; //ウィンドウ領域
+RECT cx; //クライアント領域
 
 //ぷよぷよ用グローバル変数
 
@@ -101,13 +105,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		return FALSE;
 	}
-	RECT rx; //ウィンドウ領域
-	RECT cx; //クライアント領域
+	
+
 	GetWindowRect(hWnd, &rx);
 	GetClientRect(hWnd, &cx);
 	const int new_width = 800 + (rx.right - rx.left) - (cx.right - cx.left);
 	const int new_height = 600 + (rx.bottom - rx.top) - (cx.bottom - cx.top);
 	SetWindowPos(hWnd, NULL, 0, 0, new_width, new_height, SWP_SHOWWINDOW);
+
+	//bitmap関連
+	GetClientRect(GetDesktopWindow(), &cx);  	// デスクトップのサイズを取得
+	hBitmap = CreateCompatibleBitmap(GetDC(hWnd), cx.right, cx.bottom);
+	hdcMem = CreateCompatibleDC(NULL);		// カレントスクリーン互換
+	SelectObject(hdcMem, hBitmap);// MDCにビットマップを割り付け
 
 	//必要なボタン
 	//全部リセット(フィールドと内部情報)
@@ -323,6 +333,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					//つもを置いた手を描画する
 					InvalidateRect(hWnd, NULL, false);
 					paint();
+					UpdateWindow(hWnd); //強制再描画
 					while (chain(nowField, true)) {
 						
 						nowChain++;
@@ -331,7 +342,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						//std::this_thread::sleep_for(std::chrono::milliseconds(600)); //連鎖を追えるように
 						Sleep(600);
 						paint();
-						
+						UpdateWindow(hWnd); //強制再描画
 
 					}
 				}else{
@@ -397,6 +408,17 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_PAINT:
 	{
+
+		GetClientRect(hWnd, &cx);
+		//ビットマップがあったら画面に転送
+		PAINTSTRUCT ps;
+		HDC hdc = BeginPaint(hWnd, &ps);
+		
+		paint();
+		BitBlt(hdc, 0, 0, cx.right, cx.bottom, hdcMem, 0, 0, SRCCOPY);
+		SetBkColor(hdc, RGB(255, 255, 255));
+		EndPaint(hWnd, &ps);
+		
 		//描画処理
 		paint();
 	}
@@ -756,10 +778,11 @@ void fallTsumo(int field[8][16], std::vector<int> tsumo, int controll) {
 //フィールド描画
 void paint() {
 	PAINTSTRUCT ps;
-	HDC hdc = BeginPaint(hWnd, &ps);
+	//HDC hdc = BeginPaint(hWnd, &ps);
+	
 	// TODO: HDC を使用する描画コードをここに追加してください...
 	HPEN   hNewPen = (HPEN)CreatePen(PS_INSIDEFRAME, 1, RGB(0x00, 0x00, 0x00));
-	HPEN   hOldPen = (HPEN)SelectObject(hdc, hNewPen);
+	HPEN   hOldPen = (HPEN)SelectObject(hdcMem, hNewPen);
 	static HBRUSH redBrush = (HBRUSH)CreateSolidBrush(RGB(0xFF, 0x00, 0x00));
 	static HBRUSH greenBrush = (HBRUSH)CreateSolidBrush(RGB(0x00, 0xFF, 0x7F));
 	static HBRUSH blueBrush = (HBRUSH)CreateSolidBrush(RGB(0x00, 0xBF, 0xFF));
@@ -768,75 +791,75 @@ void paint() {
 	static HBRUSH whiteBrush = (HBRUSH)CreateSolidBrush(RGB(0xFF, 0xFF, 0xFF));
 	static HBRUSH blackBrush = (HBRUSH)CreateSolidBrush(RGB(0x00, 0x00, 0x00));
 	static HBRUSH blownBrush = (HBRUSH)CreateSolidBrush(RGB(0x86, 0x4A, 0x2B));
-	hOldBrush = (HBRUSH)SelectObject(hdc, whiteBrush);
-
+	hOldBrush = (HBRUSH)SelectObject(hdcMem, whiteBrush);
+	FillRect(hdcMem, &cx, hOldBrush); //背景を白く塗りつぶす
 	//連鎖数描画
-	Rectangle(hdc, 300, 410, 460, 450);
+	Rectangle(hdcMem, 300, 410, 460, 450);
 	static LPCWSTR chainStr = L"連鎖数";
-	TextOut(hdc, 350, 400, chainStr, lstrlen(chainStr));
+	TextOut(hdcMem, 350, 400, chainStr, lstrlen(chainStr));
 	LPCWSTR nowChainStr = convertVal(nowChain);
-	TextOut(hdc, 350, 420, nowChainStr, lstrlen(nowChainStr));
+	TextOut(hdcMem, 350, 420, nowChainStr, lstrlen(nowChainStr));
 	//フィールド描画
 	for (int i = 13; i >= 1; i--) {
 		for (int j = 0; j < 8; j++) {
 
 			switch (nowField[j][i]) {
-			case 1: hOldBrush = (HBRUSH)SelectObject(hdc, redBrush);  break;
-			case 2: hOldBrush = (HBRUSH)SelectObject(hdc, greenBrush);  break;
-			case 3: hOldBrush = (HBRUSH)SelectObject(hdc, blueBrush);  break;
-			case 4: hOldBrush = (HBRUSH)SelectObject(hdc, yellowBrush); break;
-			case 7: hOldBrush = (HBRUSH)SelectObject(hdc, blackBrush); break;
-			default: hOldBrush = (HBRUSH)SelectObject(hdc, whiteBrush);
+			case 1: hOldBrush = (HBRUSH)SelectObject(hdcMem, redBrush);  break;
+			case 2: hOldBrush = (HBRUSH)SelectObject(hdcMem, greenBrush);  break;
+			case 3: hOldBrush = (HBRUSH)SelectObject(hdcMem, blueBrush);  break;
+			case 4: hOldBrush = (HBRUSH)SelectObject(hdcMem, yellowBrush); break;
+			case 7: hOldBrush = (HBRUSH)SelectObject(hdcMem, blackBrush); break;
+			default: hOldBrush = (HBRUSH)SelectObject(hdcMem, whiteBrush);
 			}
 
-			Rectangle(hdc, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
+			Rectangle(hdcMem, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
 		}
 	}
 
 	//壁描画
-	hOldBrush = (HBRUSH)SelectObject(hdc, blownBrush);
+	hOldBrush = (HBRUSH)SelectObject(hdcMem, blownBrush);
 	for (int j = 0; j < 8; j += 7) {
 		for (int i = 12; i >= 0; i--) {
 
-			Rectangle(hdc, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
+			Rectangle(hdcMem, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
 		}
 	}
 	for (int j = 0; j < 8; j ++) {
 		int i = 0;
-		Rectangle(hdc, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
+		Rectangle(hdcMem, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
 	}
 
 	//ツモ描画
 	for (int i = 0; i < 2; i++) {
 		switch (tsumo[(i + turn * 2) % 128]) {
-		case 1: hOldBrush = (HBRUSH)SelectObject(hdc, redBrush); break;
-		case 2: hOldBrush = (HBRUSH)SelectObject(hdc, greenBrush); break;
-		case 3: hOldBrush = (HBRUSH)SelectObject(hdc, blueBrush); break;
-		case 4: hOldBrush = (HBRUSH)SelectObject(hdc, yellowBrush); break;
+		case 1: hOldBrush = (HBRUSH)SelectObject(hdcMem, redBrush); break;
+		case 2: hOldBrush = (HBRUSH)SelectObject(hdcMem, greenBrush); break;
+		case 3: hOldBrush = (HBRUSH)SelectObject(hdcMem, blueBrush); break;
+		case 4: hOldBrush = (HBRUSH)SelectObject(hdcMem, yellowBrush); break;
 		}
-		Rectangle(hdc, FIELD_LEFT + 60, FIELD_TOP - 40 + (i * 20), FIELD_LEFT + 60 + TSUMO_SIZE, FIELD_TOP - 40 + (i * 20) + TSUMO_SIZE);
+		Rectangle(hdcMem, FIELD_LEFT + 60, FIELD_TOP - 40 + (i * 20), FIELD_LEFT + 60 + TSUMO_SIZE, FIELD_TOP - 40 + (i * 20) + TSUMO_SIZE);
 	}
 	for (int i = 2; i < 4; i++) {
 		switch (tsumo[(i + turn * 2) % 128]) {
-		case 1: hOldBrush = (HBRUSH)SelectObject(hdc, redBrush); break;
-		case 2: hOldBrush = (HBRUSH)SelectObject(hdc, greenBrush); break;
-		case 3: hOldBrush = (HBRUSH)SelectObject(hdc, blueBrush); break;
-		case 4: hOldBrush = (HBRUSH)SelectObject(hdc, yellowBrush); break;
+		case 1: hOldBrush = (HBRUSH)SelectObject(hdcMem, redBrush); break;
+		case 2: hOldBrush = (HBRUSH)SelectObject(hdcMem, greenBrush); break;
+		case 3: hOldBrush = (HBRUSH)SelectObject(hdcMem, blueBrush); break;
+		case 4: hOldBrush = (HBRUSH)SelectObject(hdcMem, yellowBrush); break;
 		}
-		Rectangle(hdc, FIELD_LEFT + 220, FIELD_TOP + (i * 20), FIELD_LEFT + 220 + TSUMO_SIZE, FIELD_TOP + (i * 20) + TSUMO_SIZE);
+		Rectangle(hdcMem, FIELD_LEFT + 220, FIELD_TOP + (i * 20), FIELD_LEFT + 220 + TSUMO_SIZE, FIELD_TOP + (i * 20) + TSUMO_SIZE);
 	}
 	for (int i = 4; i < 6; i++) {
 		switch (tsumo[(i + turn * 2) % 128]) {
-		case 1: hOldBrush = (HBRUSH)SelectObject(hdc, redBrush); break;
-		case 2: hOldBrush = (HBRUSH)SelectObject(hdc, greenBrush); break;
-		case 3: hOldBrush = (HBRUSH)SelectObject(hdc, blueBrush); break;
-		case 4: hOldBrush = (HBRUSH)SelectObject(hdc, yellowBrush); break;
+		case 1: hOldBrush = (HBRUSH)SelectObject(hdcMem, redBrush); break;
+		case 2: hOldBrush = (HBRUSH)SelectObject(hdcMem, greenBrush); break;
+		case 3: hOldBrush = (HBRUSH)SelectObject(hdcMem, blueBrush); break;
+		case 4: hOldBrush = (HBRUSH)SelectObject(hdcMem, yellowBrush); break;
 		}
-		Rectangle(hdc, FIELD_LEFT + 220, FIELD_TOP + 20 + (i * 20), FIELD_LEFT + 220 + TSUMO_SIZE, FIELD_TOP + 20 + (i * 20) + TSUMO_SIZE);
+		Rectangle(hdcMem, FIELD_LEFT + 220, FIELD_TOP + 20 + (i * 20), FIELD_LEFT + 220 + TSUMO_SIZE, FIELD_TOP + 20 + (i * 20) + TSUMO_SIZE);
 	}
 	//DeleteObject(SelectObject(hdc, hOldBrush));
 	//DeleteObject(SelectObject(hdc, hOldPen));
-	EndPaint(hWnd, &ps);
+	//EndPaint(hWnd, &ps);
 }
 
 //数値から文字列に変換
