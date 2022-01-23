@@ -324,12 +324,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					paint();
 					while (chain(nowField, true)) {
 						std::this_thread::sleep_for(std::chrono::milliseconds(600)); //連鎖を追えるように
+						nowChain++;
 						//再描画
 						InvalidateRect(hWnd, NULL, false);
 						paint();
-						nowChain++;
+						
 
 					}
+				}else{
+					//再描画
+					InvalidateRect(hWnd, NULL, false);
 				}
 
 			}
@@ -340,10 +344,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			isFieldChange = false;
 
-			//再描画
-			InvalidateRect(hWnd, NULL, false);
-			paint();
-
+	
 			break;
 		}
 		case DEBUG: {
