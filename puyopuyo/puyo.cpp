@@ -773,10 +773,7 @@ void fallTsumo(int field[8][16], std::vector<int> tsumo, int controll) {
 
 //フィールド描画
 void paint() {
-	PAINTSTRUCT ps;
-	//HDC hdc = BeginPaint(hWnd, &ps);
-	
-	// TODO: HDC を使用する描画コードをここに追加してください...
+
 	HPEN   hNewPen = (HPEN)CreatePen(PS_INSIDEFRAME, 1, RGB(0x00, 0x00, 0x00));
 	HPEN   hOldPen = (HPEN)SelectObject(hdcMem, hNewPen);
 	static HBRUSH redBrush = (HBRUSH)CreateSolidBrush(RGB(0xFF, 0x00, 0x00));
