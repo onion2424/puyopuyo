@@ -14,6 +14,7 @@
 #include "Thinking.h"
 #include "Resource.h"
 
+
 #pragma comment(lib, "winmm.lib")
 
 //メッセージ
@@ -323,10 +324,12 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 					InvalidateRect(hWnd, NULL, false);
 					paint();
 					while (chain(nowField, true)) {
-						std::this_thread::sleep_for(std::chrono::milliseconds(600)); //連鎖を追えるように
+						
 						nowChain++;
 						//再描画
 						InvalidateRect(hWnd, NULL, false);
+						//std::this_thread::sleep_for(std::chrono::milliseconds(600)); //連鎖を追えるように
+						Sleep(600);
 						paint();
 						
 
@@ -831,7 +834,7 @@ void paint() {
 		}
 		Rectangle(hdc, FIELD_LEFT + 220, FIELD_TOP + 20 + (i * 20), FIELD_LEFT + 220 + TSUMO_SIZE, FIELD_TOP + 20 + (i * 20) + TSUMO_SIZE);
 	}
-	//DeleteObject(SelectObject(hdc, hOldBrush)); 合った方が良いのか不明
+	//DeleteObject(SelectObject(hdc, hOldBrush));
 	//DeleteObject(SelectObject(hdc, hOldPen));
 	EndPaint(hWnd, &ps);
 }
