@@ -340,7 +340,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						//再描画
 						InvalidateRect(hWnd, NULL, false);
 						//std::this_thread::sleep_for(std::chrono::milliseconds(600));
-						Sleep(6000);
+						Sleep(600);
 						UpdateWindow(hWnd); //強制再描画
 
 					}
