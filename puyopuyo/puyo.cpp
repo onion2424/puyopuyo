@@ -785,7 +785,7 @@ void paint() {
 	static HBRUSH blackBrush = (HBRUSH)CreateSolidBrush(RGB(0x00, 0x00, 0x00));
 	static HBRUSH blownBrush = (HBRUSH)CreateSolidBrush(RGB(0x86, 0x4A, 0x2B));
 	hOldBrush = (HBRUSH)SelectObject(hdcMem, whiteBrush);
-	FillRect(hdcMem, &cx, hOldBrush); //背景を白く塗りつぶす
+	FillRect(hdcMem, &cx, whiteBrush); //背景を白く塗りつぶす
 	//連鎖数描画
 	Rectangle(hdcMem, 300, 410, 460, 450);
 	static LPCWSTR chainStr = L"連鎖数";
