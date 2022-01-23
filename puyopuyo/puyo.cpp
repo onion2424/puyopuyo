@@ -331,17 +331,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//連鎖確認
 				if (isChain(nowField)) { //ちらつき防止用にチェックしてから再描画
 					//つもを置いた手を描画する
+					
 					InvalidateRect(hWnd, NULL, false);
-					paint();
 					UpdateWindow(hWnd); //強制再描画
 					while (chain(nowField, true)) {
 						
 						nowChain++;
 						//再描画
 						InvalidateRect(hWnd, NULL, false);
-						//std::this_thread::sleep_for(std::chrono::milliseconds(600)); //連鎖を追えるように
-						Sleep(600);
-						paint();
+						//std::this_thread::sleep_for(std::chrono::milliseconds(600));
+						Sleep(6000);
 						UpdateWindow(hWnd); //強制再描画
 
 					}
