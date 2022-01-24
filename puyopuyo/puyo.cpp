@@ -339,10 +339,9 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 						while (chain(nowField, true)) {
 							nowChain++;
 							//再描画
-							std::this_thread::sleep_for(std::chrono::milliseconds(600));
 							InvalidateRect(hWnd, NULL, false);
 							UpdateWindow(hWnd); //強制再描画
-							//Sleep(600);
+							std::this_thread::sleep_for(std::chrono::milliseconds(600));
 						}
 						});
 					chainPaint.detach();
