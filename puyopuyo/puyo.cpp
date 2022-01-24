@@ -43,9 +43,9 @@ HWND hwnd_button_forward; //前ボタン
 HWND hwnd_button_reset;  //リセットボタン
 HWND hwnd_button_change;  //変更ボタン
 HWND hWnd;
-HBRUSH hOldBrush;
 HBITMAP hBitmap;
 HDC     hdcMem;
+
 RECT rx; //ウィンドウ領域
 RECT cx; //クライアント領域
 
@@ -105,7 +105,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 	{
 		return FALSE;
 	}
-	
+
 
 	GetWindowRect(hWnd, &rx);
 	GetClientRect(hWnd, &cx);
@@ -298,7 +298,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Thinking::nextTsumo[4] = tsumo[(turn * 2 + 4) % 128];
 			Thinking::nextTsumo[5] = tsumo[(turn * 2 + 5) % 128];
 			//	staticメンバ : RANGE（ビームサーチの幅）をセット
-			Thinking::RANGE = 400;
+			Thinking::RANGE = 40;
 
 			//それぞれで最良の手を探索する
 			std::thread t1([&think1, deep]() {think1.thinking(deep); });
@@ -331,20 +331,23 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//連鎖確認
 				if (isChain(nowField)) { //ちらつき防止用にチェックしてから再描画
 					//つもを置いた手を描画する
-					
+
 					InvalidateRect(hWnd, NULL, false);
 					UpdateWindow(hWnd); //強制再描画
-					while (chain(nowField, true)) {
-						
-						nowChain++;
-						//再描画
-						InvalidateRect(hWnd, NULL, false);
-						//std::this_thread::sleep_for(std::chrono::milliseconds(600));
-						Sleep(600);
-						UpdateWindow(hWnd); //強制再描画
-
-					}
-				}else{
+					Sleep(600);
+					std::thread chainPaint([hWnd]() {
+						while (chain(nowField, true)) {
+							nowChain++;
+							//再描画
+							std::this_thread::sleep_for(std::chrono::milliseconds(600));
+							InvalidateRect(hWnd, NULL, false);
+							UpdateWindow(hWnd); //強制再描画
+							//Sleep(600);
+						}
+						});
+					chainPaint.detach();
+				}
+				else {
 					//再描画
 					InvalidateRect(hWnd, NULL, false);
 				}
@@ -357,7 +360,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 			isFieldChange = false;
 
-	
+
 			break;
 		}
 		case DEBUG: {
@@ -407,15 +410,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	break;
 	case WM_PAINT:
 	{
-
-		GetClientRect(hWnd, &cx);
 		//ビットマップを画面に転送
 		PAINTSTRUCT ps;
 		HDC hdc = BeginPaint(hWnd, &ps);
 		paint();
 		BitBlt(hdc, 0, 0, cx.right, cx.bottom, hdcMem, 0, 0, SRCCOPY);
 		EndPaint(hWnd, &ps);
-		
+
 	}
 	break;
 	case WM_DESTROY:
@@ -772,9 +773,7 @@ void fallTsumo(int field[8][16], std::vector<int> tsumo, int controll) {
 
 //フィールド描画
 void paint() {
-
-	HPEN   hNewPen = (HPEN)CreatePen(PS_INSIDEFRAME, 1, RGB(0x00, 0x00, 0x00));
-	HPEN   hOldPen = (HPEN)SelectObject(hdcMem, hNewPen);
+	static HBRUSH hOldBrush;
 	static HBRUSH redBrush = (HBRUSH)CreateSolidBrush(RGB(0xFF, 0x00, 0x00));
 	static HBRUSH greenBrush = (HBRUSH)CreateSolidBrush(RGB(0x00, 0xFF, 0x7F));
 	static HBRUSH blueBrush = (HBRUSH)CreateSolidBrush(RGB(0x00, 0xBF, 0xFF));
@@ -791,6 +790,7 @@ void paint() {
 	TextOut(hdcMem, 350, 400, chainStr, lstrlen(chainStr));
 	LPCWSTR nowChainStr = convertVal(nowChain);
 	TextOut(hdcMem, 350, 420, nowChainStr, lstrlen(nowChainStr));
+
 	//フィールド描画
 	for (int i = 13; i >= 1; i--) {
 		for (int j = 0; j < 8; j++) {
@@ -816,7 +816,7 @@ void paint() {
 			Rectangle(hdcMem, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
 		}
 	}
-	for (int j = 0; j < 8; j ++) {
+	for (int j = 0; j < 8; j++) {
 		int i = 0;
 		Rectangle(hdcMem, FIELD_LEFT + (j * 20), FIELD_TOP + ((14 - i) * 20), FIELD_LEFT + (j * 20) + TSUMO_SIZE, FIELD_TOP + ((14 - i) * 20) + TSUMO_SIZE);
 	}
@@ -849,8 +849,7 @@ void paint() {
 		}
 		Rectangle(hdcMem, FIELD_LEFT + 220, FIELD_TOP + 20 + (i * 20), FIELD_LEFT + 220 + TSUMO_SIZE, FIELD_TOP + 20 + (i * 20) + TSUMO_SIZE);
 	}
-	//DeleteObject(SelectObject(hdc, hOldBrush));
-	//DeleteObject(SelectObject(hdc, hOldPen));
+	//DeleteObject(SelectObject(hdcMem, hOldBrush));
 	//EndPaint(hWnd, &ps);
 }
 
