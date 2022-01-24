@@ -232,6 +232,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 		switch (wmId)
 		{
 		case RESET: {
+			if (isFieldChange) break;
 			//フィールドリセット
 			isFieldChange = true;
 			isDie = false;
@@ -264,6 +265,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			break;
 		}
 		case NEXT: {
+			if (isFieldChange) break;
 			isFieldChange = true;
 
 			int res = -1; //次の手のパターン（22手）
@@ -343,12 +345,14 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 							UpdateWindow(hWnd); //強制再描画
 							std::this_thread::sleep_for(std::chrono::milliseconds(600));
 						}
+						isFieldChange = false;
 						});
 					chainPaint.detach();
 				}
 				else {
 					//再描画
 					InvalidateRect(hWnd, NULL, false);
+					isFieldChange = false;
 				}
 
 			}
@@ -357,7 +361,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 				//死にましたメッセージ?
 			}
 
-			isFieldChange = false;
+			
 
 
 			break;
