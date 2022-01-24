@@ -298,7 +298,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 			Thinking::nextTsumo[4] = tsumo[(turn * 2 + 4) % 128];
 			Thinking::nextTsumo[5] = tsumo[(turn * 2 + 5) % 128];
 			//	staticメンバ : RANGE（ビームサーチの幅）をセット
-			Thinking::RANGE = 40;
+			Thinking::RANGE = 400;
 
 			//それぞれで最良の手を探索する
 			std::thread t1([&think1, deep]() {think1.thinking(deep); });
