@@ -7,14 +7,14 @@
 
 int Thinking::RANGE = 400;
 
-//patƒŠƒZƒbƒg
+//patãƒªã‚»ãƒƒãƒˆ
 void Thinking::resetPat() {
 	for (int i = 0; i < 22; i++) {
 		pat[i] = 0;
 	}
 }
 
-//”z—ñ‚©‚çfield‚ÉƒZƒbƒg
+//é…åˆ—ã‹ã‚‰fieldã«ã‚»ãƒƒãƒˆ
 void Thinking::setField(int nowField[8][16]) {
 	unsigned long long tmpfield[6] = {};
 	for (int i = 0; i < 4; i++) {
@@ -39,15 +39,15 @@ void Thinking::setField(int nowField[8][16]) {
 }
 
 
-//ƒcƒ‚‚ğƒ‰ƒ“ƒ_ƒ€‚Éì¬(‚SF128è‹Ï“™)
+//ãƒ„ãƒ¢ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«ä½œæˆ(ï¼”è‰²128æ‰‹å‡ç­‰)
 void Thinking::makeTsumo() {
 	for (int i = 0; i < 128; i++) {
 		tsumo[i] = i / 32 + 1;
 	}
 	std::random_device get_rand_dev;
-	std::mt19937 get_rand_mt(get_rand_dev()); // seed‚É—”‚ğw’è
+	std::mt19937 get_rand_mt(get_rand_dev()); // seedã«ä¹±æ•°ã‚’æŒ‡å®š
 	std::shuffle(tsumo.begin(), tsumo.end(), get_rand_mt);
-	//‰è‚Æ‚»‚ÌŸ‚ÍŒ©‚¦‚éƒcƒ‚‚É‡‚í‚¹‚é(ƒ‹[ƒv‚æ‚è‚Í‘‚¢H)
+	//åˆæ‰‹ã¨ãã®æ¬¡ã¯è¦‹ãˆã‚‹ãƒ„ãƒ¢ã«åˆã‚ã›ã‚‹(ãƒ«ãƒ¼ãƒ—ã‚ˆã‚Šã¯æ—©ã„ï¼Ÿ)
 	tsumo[0] = nextTsumo[0];
 	tsumo[1] = nextTsumo[1];
 	tsumo[2] = nextTsumo[2];
@@ -56,7 +56,7 @@ void Thinking::makeTsumo() {
 	tsumo[5] = nextTsumo[5];
 }
 
-//	‚‚³‚ğ”z—ñ‚ÉŠi”[
+//	é«˜ã•ã‚’é…åˆ—ã«æ ¼ç´
 void Thinking::setHeight(__m128i reg, int array[]) {
 	uint16_t* val = (uint16_t*)&reg;
 	for (int i = 0; i < 6; i++) {
@@ -65,20 +65,20 @@ void Thinking::setHeight(__m128i reg, int array[]) {
 	return;
 }
 
-//ƒcƒ‚‚ğ‚¨‚¯‚éˆÊ’u‚ğæ“¾(ˆø”‚ÉƒZƒbƒg‚µ‚Ä•Ô‚·)
+//ãƒ„ãƒ¢ã‚’ãŠã‘ã‚‹ä½ç½®ã‚’å–å¾—(å¼•æ•°ã«ã‚»ãƒƒãƒˆã—ã¦è¿”ã™)
 void Thinking::getFallPosition(int& start, int& end, int height[]) {
-	//13’i‚Ì•Ç‚Í‰z‚¦‚ç‚ê‚È‚¢
+	//13æ®µã®å£ã¯è¶Šãˆã‚‰ã‚Œãªã„
 	if (height[1] < 13) {
 		if (height[0] < 13) {
 			start = 0;
 		}
 		else {
-			start = 3; //ã‚Ìƒcƒ‚‚Í14’i–Ú‚É‚Ì‚¹‚ç‚ê‚é
+			start = 3; //ä¸Šã®ãƒ„ãƒ¢ã¯14æ®µç›®ã«ã®ã›ã‚‰ã‚Œã‚‹
 		}
 
 	}
 	else {
-		start = 7; //ã‚Ìƒcƒ‚‚Í14’i–Ú‚É‚Ì‚¹‚ç‚ê‚é
+		start = 7; //ä¸Šã®ãƒ„ãƒ¢ã¯14æ®µç›®ã«ã®ã›ã‚‰ã‚Œã‚‹
 	}
 
 	if (height[3] < 13) {
@@ -87,24 +87,24 @@ void Thinking::getFallPosition(int& start, int& end, int height[]) {
 				end = 21;
 			}
 			else {
-				end = 18; //ã‚Ìƒcƒ‚‚Í14’i–Ú‚É‚Ì‚¹‚ç‚ê‚é
+				end = 18; //ä¸Šã®ãƒ„ãƒ¢ã¯14æ®µç›®ã«ã®ã›ã‚‰ã‚Œã‚‹
 			}
 		}
 		else {
-			end = 14; //ã‚Ìƒcƒ‚‚Í14’i–Ú‚É‚Ì‚¹‚ç‚ê‚é
+			end = 14; //ä¸Šã®ãƒ„ãƒ¢ã¯14æ®µç›®ã«ã®ã›ã‚‰ã‚Œã‚‹
 		}
 	}
 	else {
-		end = 10; //ã‚Ìƒcƒ‚‚Í14’i–Ú‚É‚Ì‚¹‚ç‚ê‚é
+		end = 10; //ä¸Šã®ãƒ„ãƒ¢ã¯14æ®µç›®ã«ã®ã›ã‚‰ã‚Œã‚‹
 	}
 	return;
 }
 
-//	Ÿ‚Ìè‚ğ’u‚­
+//	æ¬¡ã®æ‰‹ã‚’ç½®ã
 void Thinking::fallTsumo(int pat, int tsumo[]) {
-	//	fallpoint <- (1, 1)‚ÌˆÊ’u
-	//	fallpoint1 <- c’u‚«‚Ìã‘¤‚Æ‰¡’u‚«‚Ì¶‘¤@‚O`‚R‚Í‚P—ñ–Ú‚S`‚V‚Í‚Q—ñ–Ú
-	//	fallpoint2 <- c’u‚«‚Ì‰º‘¤‚Æ‰¡’u‚«‚Ì‰E‘¤@‚Q`‚T‚Í‚Q—ñ–Ú‚U`‚P‚O‚Í‚R—ñ–Ú
+	//	fallpoint <- (1, 1)ã®ä½ç½®
+	//	fallpoint1 <- ç¸¦ç½®ãæ™‚ã®ä¸Šå´ã¨æ¨ªç½®ãæ™‚ã®å·¦å´ã€€ï¼ï½ï¼“ã¯ï¼‘åˆ—ç›®ï¼”ï½ï¼—ã¯ï¼’åˆ—ç›®
+	//	fallpoint2 <- ç¸¦ç½®ãæ™‚ã®ä¸‹å´ã¨æ¨ªç½®ãæ™‚ã®å³å´ã€€ï¼’ï½ï¼•ã¯ï¼’åˆ—ç›®ï¼–ï½ï¼‘ï¼ã¯ï¼“åˆ—ç›®
 	__m128i fallPoint1, fallPoint2;
 	switch (pat / 4) {
 	case 0: fallPoint1 = fallPoint; break;
@@ -125,41 +125,41 @@ void Thinking::fallTsumo(int pat, int tsumo[]) {
 	case 5: fallPoint2 = _mm_srli_si128(fallPoint, 10); break;
 	default: fallPoint2 = _mm_setzero_si128();
 	}
-	fallPoint1 = _mm_andnot_si128(vanish14, _mm_srli_epi16(fallPoint1, fieldHeight_image[pat / 4] + (((pat + 2) / 2) % 2))); //@(((pat + 2) / 2) % 2)) <= ã‚Ì‚Æ‚«‚Æ‰º‚Ì‚Æ‚«‚ª‚ ‚é‚Ì‚Å
+	fallPoint1 = _mm_andnot_si128(vanish14, _mm_srli_epi16(fallPoint1, fieldHeight_image[pat / 4] + (((pat + 2) / 2) % 2))); //ã€€(((pat + 2) / 2) % 2)) <= ä¸Šã®ã¨ãã¨ä¸‹ã®ã¨ããŒã‚ã‚‹ã®ã§
 	fallPoint2 = _mm_andnot_si128(vanish14, _mm_srli_epi16(fallPoint2, fieldHeight_image[(pat + 2) / 4]));
-	//ª14’i–Ú‚Ííœ
+	//â†‘14æ®µç›®ã¯å‰Šé™¤
 
-	//1ƒpƒ^[ƒ“‚¸‚Â’u‚­
+	//1ãƒ‘ã‚¿ãƒ¼ãƒ³ãšã¤ç½®ã
 
-	//@‚»‚Ì‚Ü‚Ü—‰º‚Ìã‚ªZ‰º‚ª~‚Æ‚·‚é‚Æ
-	//@@‚O@‚P@‚Q@@‚R
-	//@@~@Z@
-	//@@Z@~@~Z@Z~@‚É‚µ‚½‚¢
-	//@‚Æ‚¢‚¤‡‚Å‚Q‚Qè’u‚­
-	//	fallpoint1, 2‚É‘Î‰‚·‚éZ‚Æ~‚Í1è‚²‚Æ‚É“ü‚ê‚©‚í‚é‚±‚Æ‚É‚È‚é
+	//ã€€ãã®ã¾ã¾è½ä¸‹æ™‚ã®ä¸ŠãŒã€‡ä¸‹ãŒÃ—ã¨ã™ã‚‹ã¨
+	//ã€€ã€€ï¼ã€€ï¼‘ã€€ï¼’ã€€ã€€ï¼“
+	//ã€€ã€€Ã—ã€€ã€‡ã€€
+	//ã€€ã€€ã€‡ã€€Ã—ã€€Ã—ã€‡ã€€ã€‡Ã—ã€€ã«ã—ãŸã„
+	//ã€€ã¨ã„ã†é †ã§ï¼’ï¼’æ‰‹ç½®ã
+	//	fallpoint1, 2ã«å¯¾å¿œã™ã‚‹ã€‡ã¨Ã—ã¯1æ‰‹ã”ã¨ã«å…¥ã‚Œã‹ã‚ã‚‹ã“ã¨ã«ãªã‚‹
 
 
-	//	ƒcƒ‚‚ÌF‚É‰‚¶‚ÄfallPoint‚ğ”½‰f‚·‚é
-	//	field_image‚ªfield_cp‚Æ“¯‚¶‚É‚È‚Á‚Ä‚¢‚é‘O’ñ
+	//	ãƒ„ãƒ¢ã®è‰²ã«å¿œã˜ã¦fallPointã‚’åæ˜ ã™ã‚‹
+	//	field_imageãŒfield_cpã¨åŒã˜ã«ãªã£ã¦ã„ã‚‹å‰æ
 
-	//	1‚Â‚ß‚ğ’u‚­
+	//	1ã¤ã‚ã‚’ç½®ã
 	field_image[tsumo[(pat + 1) % 2] & 0x1] = _mm_or_si128(field_image[tsumo[(pat + 1) % 2] & 0x1], fallPoint1);
 	field_image[((tsumo[(pat + 1) % 2] >> 1) & 0x1) * 2] = _mm_or_si128(field_image[((tsumo[(pat + 1) % 2] >> 1) & 0x1) * 2], fallPoint1);
 	field_image[((tsumo[(pat + 1) % 2] >> 2) & 0x1) * 3] = _mm_or_si128(field_image[((tsumo[(pat + 1) % 2] >> 2) & 0x1) * 3], fallPoint1);
 
-	//	2‚Â‚ß‚ğ’u‚­
+	//	2ã¤ã‚ã‚’ç½®ã
 	field_image[tsumo[pat % 2] & 0x1] = _mm_or_si128(field_image[tsumo[pat % 2] & 0x1], fallPoint2);
 	field_image[((tsumo[pat % 2] >> 1) & 0x1) * 2] = _mm_or_si128(field_image[((tsumo[pat % 2] >> 1) & 0x1) * 2], fallPoint2);
 	field_image[((tsumo[pat % 2] >> 2) & 0x1) * 3] = _mm_or_si128(field_image[((tsumo[pat % 2] >> 2) & 0x1) * 3], fallPoint2);
 
-	//‚RƒtƒB[ƒ‹ƒh‚Ìor(ƒcƒ‚‘¶İˆÊ’u)‚ğXV
+	//ï¼“ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®or(ãƒ„ãƒ¢å­˜åœ¨ä½ç½®)ã‚’æ›´æ–°
 	field_image[0] = _mm_or_si128(field_image[3], _mm_or_si128(field_image[2], field_image[1]));
 
 	return;
 
 }
 
-//	˜A½‚µ‚Ä‚¢‚é‚©‚ğ‚·
+//	é€£é–ã—ã¦ã„ã‚‹ã‹ã‚’è©¦ã™
 int Thinking::tryChain() {
 
 	//__m128i ojama = _mm_and_si128(*reg1, _mm_and_si128(*reg2, *reg3));
@@ -175,7 +175,7 @@ int Thinking::tryChain() {
 	__m128i pdepMask;
 	__m128i pextMask;
 	__m128i thirteen[3];
-	//__m128i vanish13 = _mm_set_epi64x(0x0000000400040004, 0x0004000400040000); //13’i–Ú‚Éƒrƒbƒg‚ª—§‚Á‚Ä‚¢‚é
+	//__m128i vanish13 = _mm_set_epi64x(0x0000000400040004, 0x0004000400040000); //13æ®µç›®ã«ãƒ“ãƒƒãƒˆãŒç«‹ã£ã¦ã„ã‚‹
 	//__m128i vanishOther = _mm_set_epi64x(0x00007ff87ff87ff8, 0x7ff87ff87ff80000);
 	
 	uint16_t* cnt = (uint16_t*)&vanish;
@@ -186,12 +186,12 @@ int Thinking::tryChain() {
 	uint64_t* fieldPtr3 = (uint64_t*)&field_image[3];
 	uint64_t* vanishPtr = (uint64_t*)&vanish;
 
-	//˜A½”‚ğ•Ô‚·
+	//é€£é–æ•°ã‚’è¿”ã™
 	int count = 0;
 
 	while (true) {
-		//13’i–Ú‚Ìî•ñ‚ğ•Û‘¶
-		//‚»‚ÌŒãAƒtƒB[ƒ‹ƒh(1`12’i–Ú)ˆÈŠO‚Ìî•ñ‚ğÁ‚·
+		//13æ®µç›®ã®æƒ…å ±ã‚’ä¿å­˜
+		//ãã®å¾Œã€ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(1ï½12æ®µç›®)ä»¥å¤–ã®æƒ…å ±ã‚’æ¶ˆã™
 		thirteen[0] = _mm_and_si128(vanish13, field_image[1]);
 		thirteen[1] = _mm_and_si128(vanish13, field_image[2]);
 		thirteen[2] = _mm_and_si128(vanish13, field_image[3]);
@@ -199,116 +199,116 @@ int Thinking::tryChain() {
 		field_image[2] = _mm_and_si128(vanishOther, field_image[2]);
 		field_image[3] = _mm_and_si128(vanishOther, field_image[3]);
 		for (int color = 1; color < 5; color++) {
-			//ˆêF‚¸‚Â‚·
+			//ä¸€è‰²ãšã¤è©¦ã™
 			switch (color) {																						     //	    reg3   reg2   reg1	
-			case 1: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[2], field_image[1])); break;//Ô :  0		0	   1
-			case 2: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[1], field_image[2])); break;//—Î :  0      1      0
-			case 3: colorReg = _mm_andnot_si128(field_image[3], _mm_and_si128(field_image[1], field_image[2])); break;//Â :     0      1      1
-			case 4: colorReg = _mm_andnot_si128(field_image[2], _mm_andnot_si128(field_image[1], field_image[3])); break;//‰©F  1      0      0
-			//case 5: colorReg = _mm_andnot_si128(field_image[2], _mm_and_si128(field_image[1], field_image[3])); break; //‡    1      0      1
+			case 1: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[2], field_image[1])); break;//èµ¤ :  0		0	   1
+			case 2: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[1], field_image[2])); break;//ç·‘ :  0      1      0
+			case 3: colorReg = _mm_andnot_si128(field_image[3], _mm_and_si128(field_image[1], field_image[2])); break;//é’ :     0      1      1
+			case 4: colorReg = _mm_andnot_si128(field_image[2], _mm_andnot_si128(field_image[1], field_image[3])); break;//é»„è‰²  1      0      0
+			//case 5: colorReg = _mm_andnot_si128(field_image[2], _mm_and_si128(field_image[1], field_image[3])); break; //ç´«    1      0      1
 			}
 
-			//1˜AŒ‹‚Ìƒcƒ‚‚ğ’T‚·
-			//  ã‰º‚Ç‚¿‚ç‚©‚É“¯‚¶F‚ª‚ ‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-			//	tmpRegV : 1‚Âã‚É‚¸‚ç‚µ‚½ƒtƒB[ƒ‹ƒh‚Æand@-> 1‚È‚ç‰º‚Éƒcƒ‚‚ª‚ ‚é‚±‚Æ‚É‚È‚é
-			//	sheedV	: tmpRegV‚ÌƒtƒB[ƒ‹ƒh‚ğ‰º‚É‚¸‚ç‚µ‚Äxor -> ‰º‚Ì‚â‚Â‚à1‚ğ—§‚Ä‚é (¶‰E‚É‚àŒq‚ª‚Á‚Ä‚¢‚é‚Ì‚Í0‚É–ß‚é)
+			//1é€£çµã®ãƒ„ãƒ¢ã‚’æ¢ã™
+			//  ä¸Šä¸‹ã©ã¡ã‚‰ã‹ã«åŒã˜è‰²ãŒã‚ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+			//	tmpRegV : 1ã¤ä¸Šã«ãšã‚‰ã—ãŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨andã€€-> 1ãªã‚‰ä¸‹ã«ãƒ„ãƒ¢ãŒã‚ã‚‹ã“ã¨ã«ãªã‚‹
+			//	sheedV	: tmpRegVã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ä¸‹ã«ãšã‚‰ã—ã¦xor -> ä¸‹ã®ã‚„ã¤ã‚‚1ã‚’ç«‹ã¦ã‚‹ (å·¦å³ã«ã‚‚ç¹‹ãŒã£ã¦ã„ã‚‹ã®ã¯0ã«æˆ»ã‚‹)
 			tmpRegV = _mm_and_si128(colorReg, _mm_slli_epi16(colorReg, 1));
 			sheedV = _mm_xor_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1));
-			//			ªxor‚Í¶‰E•Ğ•û‚¾‚¯Œq‚ª‚Á‚Ä‚¢‚é					
-			//	¶‰E‚Ç‚¿‚ç‚©‚É“¯‚¶F‚ª‚ ‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-			//	tmpRegH : 1‚Â¶‚É‚¸‚ç‚µ‚½ƒtƒB[ƒ‹ƒh‚Æand -> 1‚È‚ç‰E‚Éƒcƒ‚‚ª‚ ‚é‚±‚Æ‚É‚È‚é
-			//	sheedH	: tmpRegH‚ÌƒtƒB[ƒ‹ƒh‚ğ¶‚É‚¸‚ç‚µ‚Äxor -> ‰E‚Ì‚â‚Â‚à1‚ğ—§‚Ä‚é (¶‰E‚É‚àŒq‚ª‚Á‚Ä‚¢‚é‚Ì‚Í0‚É–ß‚é)
+			//			â†‘xorã¯å·¦å³ç‰‡æ–¹ã ã‘ç¹‹ãŒã£ã¦ã„ã‚‹					
+			//	å·¦å³ã©ã¡ã‚‰ã‹ã«åŒã˜è‰²ãŒã‚ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+			//	tmpRegH : 1ã¤å·¦ã«ãšã‚‰ã—ãŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨and -> 1ãªã‚‰å³ã«ãƒ„ãƒ¢ãŒã‚ã‚‹ã“ã¨ã«ãªã‚‹
+			//	sheedH	: tmpRegHã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’å·¦ã«ãšã‚‰ã—ã¦xor -> å³ã®ã‚„ã¤ã‚‚1ã‚’ç«‹ã¦ã‚‹ (å·¦å³ã«ã‚‚ç¹‹ãŒã£ã¦ã„ã‚‹ã®ã¯0ã«æˆ»ã‚‹)
 			tmpRegH = _mm_and_si128(colorReg, _mm_slli_si128(colorReg, 2));
 			sheedH = _mm_xor_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2));
-			//@˜AŒ‹1‚Ìƒcƒ‚ˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-			//	¶‰E‚Ç‚¿‚ç‚©@‚©@ã‰º‚Ç‚¿‚ç‚©@‚¾‚¯ƒrƒbƒg‚ğ—§‚Ä‚é
+			//ã€€é€£çµ1ã®ãƒ„ãƒ¢ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+			//	å·¦å³ã©ã¡ã‚‰ã‹ã€€ã‹ã€€ä¸Šä¸‹ã©ã¡ã‚‰ã‹ã€€ã ã‘ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
 			linkOne = _mm_xor_si128(sheedV, sheedH);
 
 
-			//  2˜AŒ‹‚Ìƒcƒ‚‚ğ’T‚·
-			//	2‚Â“¯‚¶F‚ª˜AŒ‹‚µ‚Ä‚¢‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é@i3‚Â‚Íœ‚­j ğŒ‚Í«‚Ì3‚Â
-			//						c‰¡—¼•ûŒq‚ª‚Á‚Ä‚¢‚é			or			‰¡‚ªŒq‚ª‚ç‚¸ã‰º—¼•û‚ÉŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â										or					c‚ªŒq‚ª‚ç‚¸¶‰E—¼•û‚ÉŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â				
+			//  2é€£çµã®ãƒ„ãƒ¢ã‚’æ¢ã™
+			//	2ã¤åŒã˜è‰²ãŒé€£çµã—ã¦ã„ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹ã€€ï¼ˆ3ã¤ã¯é™¤ãï¼‰ æ¡ä»¶ã¯â†“ã®3ã¤
+			//						ç¸¦æ¨ªä¸¡æ–¹ç¹‹ãŒã£ã¦ã„ã‚‹			or			æ¨ªãŒç¹‹ãŒã‚‰ãšä¸Šä¸‹ä¸¡æ–¹ã«ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤										or					ç¸¦ãŒç¹‹ãŒã‚‰ãšå·¦å³ä¸¡æ–¹ã«ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤				
 			linkTwo = _mm_or_si128(_mm_and_si128(sheedV, sheedH), _mm_or_si128(_mm_andnot_si128(sheedV, _mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2))), _mm_andnot_si128(sheedH, _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1)))));
-			//																								ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é														ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é
+			//																								â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹														â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹
 
 
-			//  3˜AŒ‹ˆÈã‚Ìƒcƒ‚‚ğ’T‚·
-			//	3‚ÂˆÈã“¯‚¶F‚ª˜AŒ‹‚µ‚Ä‚¢‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é																			
-			//						4˜AŒ‹‚ÌğŒ¨				iã‰ºŒq‚ª‚Á‚Ä‚¢‚é@@@@@@@@@‚©‚Â@@@@@@@¶‰EŒq‚ª‚Á‚Ä‚¢‚é@						or	¨3˜AŒ‹‚ÌğŒ@(ã‰º—¼•û‚ªŒq‚ª‚Á‚Ä‚é and   ¶‰E‚Ç‚¿‚ç‚©‚ÉŒq‚ª‚Á‚Ä‚é)				or		(¶‰E—¼•û‚ÉŒq‚ª‚Á‚Ä‚¢‚é   and  ã‰º‚Ç‚¿‚ç‚©‚ÉŒq‚ª‚Á‚Ä‚¢‚é)															
+			//  3é€£çµä»¥ä¸Šã®ãƒ„ãƒ¢ã‚’æ¢ã™
+			//	3ã¤ä»¥ä¸ŠåŒã˜è‰²ãŒé€£çµã—ã¦ã„ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹																			
+			//						4é€£çµã®æ¡ä»¶â†’				ï¼ˆä¸Šä¸‹ç¹‹ãŒã£ã¦ã„ã‚‹ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã‹ã¤ã€€ã€€ã€€ã€€ã€€ã€€ã€€å·¦å³ç¹‹ãŒã£ã¦ã„ã‚‹ã€€						or	â†’3é€£çµã®æ¡ä»¶ã€€(ä¸Šä¸‹ä¸¡æ–¹ãŒç¹‹ãŒã£ã¦ã‚‹ and   å·¦å³ã©ã¡ã‚‰ã‹ã«ç¹‹ãŒã£ã¦ã‚‹)				or		(å·¦å³ä¸¡æ–¹ã«ç¹‹ãŒã£ã¦ã„ã‚‹   and  ä¸Šä¸‹ã©ã¡ã‚‰ã‹ã«ç¹‹ãŒã£ã¦ã„ã‚‹)															
 			sheed = _mm_or_si128(_mm_and_si128(_mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2)), _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1))), _mm_or_si128( _mm_and_si128(sheedV, _mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2))), _mm_and_si128(sheedH, _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1)))) );
-			//											ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é								ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é																	ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é														ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é
+			//											â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹								â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹																	â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹														â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹
 			 
 			
 
-			//	ƒV[ƒhiÁ‚¦‚é‚«‚Á‚©‚¯j‚ÌˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-			//	ğŒ = ˜AŒ‹3ˆÈã‚Ì“z or —×Ú‚Ì˜AŒ‹‚ª2ˆÈã‚Ì˜AŒ‹2‚Ì“z
+			//	ã‚·ãƒ¼ãƒ‰ï¼ˆæ¶ˆãˆã‚‹ãã£ã‹ã‘ï¼‰ã®ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+			//	æ¡ä»¶ = é€£çµ3ä»¥ä¸Šã®å¥´ or éš£æ¥ã®é€£çµãŒ2ä»¥ä¸Šã®é€£çµ2ã®å¥´
 			//	
-			//	˜AŒ‹2ˆÈã‚Ì‚â‚Â
+			//	é€£çµ2ä»¥ä¸Šã®ã‚„ã¤
 			linkTwo = _mm_or_si128(sheed, linkTwo);
 			//										   
-			//	tmpRegV : 2˜AŒ‹ˆÈã‚ª¶‰E‚Ì‚Ç‚¿‚ç‚©‚ ‚é‚¢‚Í—¼•ûŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â
+			//	tmpRegV : 2é€£çµä»¥ä¸ŠãŒå·¦å³ã®ã©ã¡ã‚‰ã‹ã‚ã‚‹ã„ã¯ä¸¡æ–¹ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤
 			tmpRegV = _mm_and_si128(linkTwo, _mm_slli_epi16(linkTwo, 1));
 			tmpRegV = _mm_or_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1));
-			//			ªor‚Í­‚È‚­‚Æ‚à•Ğ•û‚ÍŒq‚ª‚Á‚Ä‚é
-			//	tmpRegH : 2˜AŒ‹ˆÈã‚ªã‰º‚Ì‚Ç‚¿‚ç‚©‚ ‚é‚¢‚Í—¼•ûŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â 
+			//			â†‘orã¯å°‘ãªãã¨ã‚‚ç‰‡æ–¹ã¯ç¹‹ãŒã£ã¦ã‚‹
+			//	tmpRegH : 2é€£çµä»¥ä¸ŠãŒä¸Šä¸‹ã®ã©ã¡ã‚‰ã‹ã‚ã‚‹ã„ã¯ä¸¡æ–¹ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤ 
 			tmpRegH = _mm_and_si128(linkTwo, _mm_slli_si128(linkTwo, 2));
 			tmpRegH = _mm_or_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2));
-			//			ªor‚Í­‚È‚­‚Æ‚à•Ğ•û‚ÍŒq‚ª‚Á‚Ä‚é
-			//	ƒV[ƒh‚Í			3˜AŒ‹ˆÈã	or	2˜AŒ‹ˆÈã‚µ‚Ä‚¢‚éƒcƒ‚‚ª—×‚è‡‚Á‚Ä‚¢‚éêŠ
+			//			â†‘orã¯å°‘ãªãã¨ã‚‚ç‰‡æ–¹ã¯ç¹‹ãŒã£ã¦ã‚‹
+			//	ã‚·ãƒ¼ãƒ‰ã¯			3é€£çµä»¥ä¸Š	or	2é€£çµä»¥ä¸Šã—ã¦ã„ã‚‹ãƒ„ãƒ¢ãŒéš£ã‚Šåˆã£ã¦ã„ã‚‹å ´æ‰€
 			sheed = _mm_or_si128(sheed, _mm_or_si128(tmpRegV, tmpRegH));
 
 
 
-			//	ƒV[ƒh‚É—×Ú‚·‚é˜AŒ‹1‚àÁ‚¦‚é  _mm_xor_si128(sheedV, sheedH)‚Í˜AŒ‹1@iƒV[ƒh‚ğã‰º¶‰E‚É‚¸‚ç‚µ‚Ä˜AŒ‹‚P‚ÌˆÊ’u‚Æand‚ğ‚Æ‚éj
-			//	tmpRegV : ƒV[ƒh + ƒV[ƒh‚Ìã‰º‚É˜AŒ‹‚µ‚Ä‚¢‚é˜AŒ‹1‚Ìƒcƒ‚‚ÌˆÊ’u		«ƒV[ƒh‚ğã‚É‚¸‚ç‚·													«ƒV[ƒh‚ğ‰º‚É‚¸‚ç‚·
-			//	tmpRegH : ƒV[ƒh + ƒV[ƒh‚Ì¶‰E‚É˜AŒ‹‚µ‚Ä‚¢‚é˜AŒ‹1‚Ìƒcƒ‚‚ÌˆÊ’u		«ƒV[ƒh‚ğ¶‚É‚¸‚ç‚·													«ƒV[ƒh‚ğ‰E‚É‚¸‚ç‚·
+			//	ã‚·ãƒ¼ãƒ‰ã«éš£æ¥ã™ã‚‹é€£çµ1ã‚‚æ¶ˆãˆã‚‹  _mm_xor_si128(sheedV, sheedH)ã¯é€£çµ1ã€€ï¼ˆã‚·ãƒ¼ãƒ‰ã‚’ä¸Šä¸‹å·¦å³ã«ãšã‚‰ã—ã¦é€£çµï¼‘ã®ä½ç½®ã¨andã‚’ã¨ã‚‹ï¼‰
+			//	tmpRegV : ã‚·ãƒ¼ãƒ‰ + ã‚·ãƒ¼ãƒ‰ã®ä¸Šä¸‹ã«é€£çµã—ã¦ã„ã‚‹é€£çµ1ã®ãƒ„ãƒ¢ã®ä½ç½®		â†“ã‚·ãƒ¼ãƒ‰ã‚’ä¸Šã«ãšã‚‰ã™													â†“ã‚·ãƒ¼ãƒ‰ã‚’ä¸‹ã«ãšã‚‰ã™
+			//	tmpRegH : ã‚·ãƒ¼ãƒ‰ + ã‚·ãƒ¼ãƒ‰ã®å·¦å³ã«é€£çµã—ã¦ã„ã‚‹é€£çµ1ã®ãƒ„ãƒ¢ã®ä½ç½®		â†“ã‚·ãƒ¼ãƒ‰ã‚’å·¦ã«ãšã‚‰ã™													â†“ã‚·ãƒ¼ãƒ‰ã‚’å³ã«ãšã‚‰ã™
 			tmpRegV = _mm_or_si128(_mm_and_si128(linkOne, _mm_slli_epi16(sheed, 1)), _mm_and_si128(linkOne, _mm_srli_epi16(sheed, 1)));
 			tmpRegH = _mm_or_si128(_mm_and_si128(linkOne, _mm_slli_si128(sheed, 2)), _mm_and_si128(linkOne, _mm_srli_si128(sheed, 2)));
 			sheed = _mm_or_si128(sheed, _mm_or_si128(tmpRegV, tmpRegH));
-			vanish = _mm_or_si128(sheed, vanish); //4FŒ©‚ÄÅI“I‚É‚ÍÁ‚¦‚éˆÊ’u‘S‚Ä‚P‚ª—§‚Á‚Ä‚¢‚é
+			vanish = _mm_or_si128(sheed, vanish); //4è‰²è¦‹ã¦æœ€çµ‚çš„ã«ã¯æ¶ˆãˆã‚‹ä½ç½®å…¨ã¦ï¼‘ãŒç«‹ã£ã¦ã„ã‚‹
 		}
-		//	vanish‚ª0‚È‚ç”²‚¯‚é
+		//	vanishãŒ0ãªã‚‰æŠœã‘ã‚‹
 		if ((vanishPtr[0] | vanishPtr[1]) == 0) break;
-		//	‚±‚±‚ğ’Ê‚é”‚ª˜A½”
+		//	ã“ã“ã‚’é€šã‚‹æ•°ãŒé€£é–æ•°
 		count++;
 
-		// ‚±‚±‚Åã‰º¶‰E‚É‚¨‚¶‚á‚Ü‚ª‚ ‚Á‚½‚çƒtƒ‰ƒO—§‚Ä‚ê‚Î‚¢‚¢H(‚Æ‚è‚ ‚¦‚¸‚¨×–‚‚Í‚È‚µ)
+		// ã“ã“ã§ä¸Šä¸‹å·¦å³ã«ãŠã˜ã‚ƒã¾ãŒã‚ã£ãŸã‚‰ãƒ•ãƒ©ã‚°ç«‹ã¦ã‚Œã°ã„ã„ï¼Ÿ(ã¨ã‚Šã‚ãˆãšãŠé‚ªé­”ã¯ãªã—)
 		//tmpRegV = _mm_or_si128(_mm_and_si128(ojama, _mm_slli_epi16(vanish, 1)), _mm_and_si128(ojama, _mm_srli_epi16(vanish, 1)));
 		//tmpRegH = _mm_or_si128(_mm_and_si128(ojama, _mm_slli_si128(vanish, 2)), _mm_and_si128(ojama, _mm_srli_si128(vanish, 2)));
 		//vanish = _mm_or_si128(vanish, _mm_or_si128(tmpRegV, tmpRegH));
 
-		//		PEXT, PDEP‚Å˜A½Œã‚ÌƒtƒB[ƒ‹ƒh‚ğæ“¾‚·‚éƒCƒ[ƒW
-		//		PEXT => ƒtƒB[ƒ‹ƒhã‚ÌÁ‚¦‚È‚¢ƒcƒ‚‚ğ‡”Ô‚É‚Â‚ß‚±‚Ş
-		//		ƒtƒB[ƒ‹ƒh‚Í128ƒrƒbƒg (Ÿè‚É8—ñ * 16s‚¾‚ÆŒ©—§‚Ä‚Ä‚¢‚é)@‚Å’è‹`‚µ‚Ä‚¢‚é
-		//		Á‚¦‚È‚¢ˆÊ’u(vanish‚Ìbit”½“] ¦‹ó‚ÌêŠ‚àÁ‚¦‚È‚¢”»’è‚Å‚¢‚¢)‚ğ•\‚µ‚Ä‚¢‚éƒ}ƒXƒN‚ğ—^‚¦‚ê‚Î 128 - Á‚¦‚éƒcƒ‚” •ª‚Ìbit‚ªŒã‚ë‚©‚ç‡‚ÉƒZƒbƒg‚³‚ê‚Ä‚¢‚éŒ‹‰Ê‚ğ“¾‚ç‚ê‚é
+		//		PEXT, PDEPã§é€£é–å¾Œã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’å–å¾—ã™ã‚‹ã‚¤ãƒ¡ãƒ¼ã‚¸
+		//		PEXT => ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ä¸Šã®æ¶ˆãˆãªã„ãƒ„ãƒ¢ã‚’é †ç•ªã«ã¤ã‚ã“ã‚€
+		//		ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¯128ãƒ“ãƒƒãƒˆ (å‹æ‰‹ã«8åˆ— * 16è¡Œã ã¨è¦‹ç«‹ã¦ã¦ã„ã‚‹)ã€€ã§å®šç¾©ã—ã¦ã„ã‚‹
+		//		æ¶ˆãˆãªã„ä½ç½®(vanishã®bitåè»¢ â€»ç©ºã®å ´æ‰€ã‚‚æ¶ˆãˆãªã„åˆ¤å®šã§ã„ã„)ã‚’è¡¨ã—ã¦ã„ã‚‹ãƒã‚¹ã‚¯ã‚’ä¸ãˆã‚Œã° 128 - æ¶ˆãˆã‚‹ãƒ„ãƒ¢æ•° åˆ†ã®bitãŒå¾Œã‚ã‹ã‚‰é †ã«ã‚»ãƒƒãƒˆã•ã‚Œã¦ã„ã‚‹çµæœã‚’å¾—ã‚‰ã‚Œã‚‹
 		//		
-		//		PDEP => PEXTŒ‹‰Ê‚ğƒtƒB[ƒ‹ƒh‚ÉÄ”z’u‚·‚é
-		//		Ä”z’u—p‚Ìƒ}ƒXƒN‚ğ—^‚¦‚ê‚Î‚¢‚¢
-		//		‚ ‚ç‚©‚¶‚ßÁ‚¦‚½”‚É‰‚¶‚Ä—ñ‚²‚Æi16bit–ˆj‚ÌÄ”z’uˆÊ’u‚ğŒˆ’è‚µ‚Ä‚¨‚­@©@ƒtƒB[ƒ‹ƒh‚Ì‰º‚©‚ç1‚ğ—§‚Ä‚»‚Ì—ñ‚ÌÁ‚¦‚½”‚¾‚¯ˆê”Ôã‚ğ0‚É‚·‚é‚¾‚¯
+		//		PDEP => PEXTçµæœã‚’ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã«å†é…ç½®ã™ã‚‹
+		//		å†é…ç½®ç”¨ã®ãƒã‚¹ã‚¯ã‚’ä¸ãˆã‚Œã°ã„ã„
+		//		ã‚ã‚‰ã‹ã˜ã‚æ¶ˆãˆãŸæ•°ã«å¿œã˜ã¦åˆ—ã”ã¨ï¼ˆ16bitæ¯ï¼‰ã®å†é…ç½®ä½ç½®ã‚’æ±ºå®šã—ã¦ãŠãã€€â†ã€€ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ä¸‹ã‹ã‚‰1ã‚’ç«‹ã¦ãã®åˆ—ã®æ¶ˆãˆãŸæ•°ã ã‘ä¸€ç•ªä¸Šã‚’0ã«ã™ã‚‹ã ã‘
 		// 
-		//		—á ƒtƒB[ƒ‹ƒh(3—ñ * 5s)‚¾‚Æ‚·‚é
-		//		0 0 0	© 1‚ª4‚Â‚È‚Ì‚ÅÁ‚¦‚é‚Æ‚·‚é‚Æ	ƒtƒB[ƒ‹ƒh		11100 21220 32300
-		//		0 2 0									Á‚¦‚éˆÊ’u		11100 01000 00000	
-		//		1 2 3									Á‚¦‚È‚¢ˆÊ’u	00011 10111 11111
-		//		1 1 2									PEXTŒ‹‰Ê			0 00222 00323  ©–{—ˆ‚Í¶‘¤‚O–„‚ß
-		//		1 2 3									Á‚¦‚½”			3	  1		0
-		//												ƒ}ƒXƒN			11000 11110 11111  ©ƒtƒB[ƒ‹ƒh‚Ìã‘¤‚ÍÁ‚¦‚½”•ª‚O‚É‚·‚é
-		//												PDEP			00    222   32300  ©–{—ˆ‚Í‹ó‚¢‚½êŠ‚Í‚O–„‚ß(PEXT1‚Ì‰ºˆÊƒrƒbƒg‚©‚çƒ}ƒXƒN‚Ì1‚ª—§‚Á‚Ä‚¢‚éˆÊ’u‚É‰ºˆÊ‚©‚ç‡‚ÉÄ”z’u‚³‚ê‚é)
-		//@@@‚±‚¤‚¢‚¤ƒCƒ[ƒW‚Ås‚¤
+		//		ä¾‹ ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(3åˆ— * 5è¡Œ)ã ã¨ã™ã‚‹
+		//		0 0 0	â† 1ãŒ4ã¤ãªã®ã§æ¶ˆãˆã‚‹ã¨ã™ã‚‹ã¨	ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰		11100 21220 32300
+		//		0 2 0									æ¶ˆãˆã‚‹ä½ç½®		11100 01000 00000	
+		//		1 2 3									æ¶ˆãˆãªã„ä½ç½®	00011 10111 11111
+		//		1 1 2									PEXTçµæœ			0 00222 00323  â†æœ¬æ¥ã¯å·¦å´ï¼åŸ‹ã‚
+		//		1 2 3									æ¶ˆãˆãŸæ•°			3	  1		0
+		//												ãƒã‚¹ã‚¯			11000 11110 11111  â†ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®ä¸Šå´ã¯æ¶ˆãˆãŸæ•°åˆ†ï¼ã«ã™ã‚‹
+		//												PDEP			00    222   32300  â†æœ¬æ¥ã¯ç©ºã„ãŸå ´æ‰€ã¯ï¼åŸ‹ã‚(PEXT1ã®ä¸‹ä½ãƒ“ãƒƒãƒˆã‹ã‚‰ãƒã‚¹ã‚¯ã®1ãŒç«‹ã£ã¦ã„ã‚‹ä½ç½®ã«ä¸‹ä½ã‹ã‚‰é †ã«å†é…ç½®ã•ã‚Œã‚‹)
+		//ã€€ã€€ã€€ã“ã†ã„ã†ã‚¤ãƒ¡ãƒ¼ã‚¸ã§è¡Œã†
 		
 
-		// 	pdep‚ÅÄ”z’u‚·‚éÛ‚Ìƒ}ƒXƒN‚ğİ’è‚·‚é
-		//	‚Ü‚¸—ñ‚²‚Æi16 * 8—ñj‚ÌÁ‚¦‚é”‚ğvanish‚ğ•ªŠ„‚µ‚ÄƒJƒEƒ“ƒg‚·‚é‚±‚Æ‚Åæ“¾‚·‚é
-		//	‚»‚ÌŒãmask‚É’è‹`‚³‚ê‚Ä‚¢‚é[1ŒÂÁ‚¦‚é‚È‚ç@¨ 0111111111111000]‚Æ‚¢‚¤‚æ‚¤‚È’l‚ğpdepMask‚ÉƒZƒbƒg
+		// 	pdepã§å†é…ç½®ã™ã‚‹éš›ã®ãƒã‚¹ã‚¯ã‚’è¨­å®šã™ã‚‹
+		//	ã¾ãšåˆ—ã”ã¨ï¼ˆ16 * 8åˆ—ï¼‰ã®æ¶ˆãˆã‚‹æ•°ã‚’vanishã‚’åˆ†å‰²ã—ã¦ã‚«ã‚¦ãƒ³ãƒˆã™ã‚‹ã“ã¨ã§å–å¾—ã™ã‚‹
+		//	ãã®å¾Œmaskã«å®šç¾©ã•ã‚Œã¦ã„ã‚‹[1å€‹æ¶ˆãˆã‚‹ãªã‚‰ã€€â†’ 0111111111111000]ã¨ã„ã†ã‚ˆã†ãªå€¤ã‚’pdepMaskã«ã‚»ãƒƒãƒˆ
 		pdepMask = _mm_setr_epi16(mask[__popcnt16(cnt[0])], mask[__popcnt16(cnt[1])], mask[__popcnt16(cnt[2])], mask[__popcnt16(cnt[3])], mask[__popcnt16(cnt[4])], mask[__popcnt16(cnt[5])], mask[__popcnt16(cnt[6])], mask[__popcnt16(cnt[7])]);
-		//  pext—p‚Évanish‚Ìbit”½“]‚ğ—pˆÓ‚·‚é
+		//  pextç”¨ã«vanishã®bitåè»¢ã‚’ç”¨æ„ã™ã‚‹
 		pextMask = _mm_xor_si128(vanish, _mm_set_epi64x(0xffffffffffffffff, 0xffffffffffffffff));
 		field_image[1] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr1[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr1[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 		field_image[2] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr2[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr2[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 		field_image[3] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr3[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr3[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 
-		//	‚±‚±‚Å13’i–Ú•œŠˆ
-		//	c‚Á‚½ƒcƒ‚‚Ìã‚Ì‹óŠÔ‚ğvanish‚É‚µ‚ÄÁ‚·(13’i–Ú‚É‚ ‚ê‚Î‚¨‚¿‚Ä‚­‚é)
+		//	ã“ã“ã§13æ®µç›®å¾©æ´»
+		//	æ®‹ã£ãŸãƒ„ãƒ¢ã®ä¸Šã®ç©ºé–“ã‚’vanishã«ã—ã¦æ¶ˆã™(13æ®µç›®ã«ã‚ã‚Œã°ãŠã¡ã¦ãã‚‹)
 		field_image[1] = _mm_or_si128(thirteen[0], field_image[1]);
 		field_image[2] = _mm_or_si128(thirteen[1], field_image[2]);
 		field_image[3] = _mm_or_si128(thirteen[2], field_image[3]);
@@ -320,12 +320,12 @@ int Thinking::tryChain() {
 		field_image[2] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr2[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr2[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 		field_image[3] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr3[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr3[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 
-		//ƒNƒŠƒA‚·‚é
+		//ã‚¯ãƒªã‚¢ã™ã‚‹
 		vanish = _mm_setzero_si128();
 	}
 
-	//13’i–Ú‚ğŒ³‚É–ß‚·
-	//‚»‚ÌŒãƒtƒB[ƒ‹ƒh‚Ìor(ƒcƒ‚‘¶İˆÊ’u)‚ğXV
+	//13æ®µç›®ã‚’å…ƒã«æˆ»ã™
+	//ãã®å¾Œãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®or(ãƒ„ãƒ¢å­˜åœ¨ä½ç½®)ã‚’æ›´æ–°
 	field_image[1] = _mm_or_si128(thirteen[0], field_image[1]);
 	field_image[2] = _mm_or_si128(thirteen[1], field_image[2]);
 	field_image[3] = _mm_or_si128(thirteen[2], field_image[3]);
@@ -334,7 +334,7 @@ int Thinking::tryChain() {
 	return count;
 }
 
-//	•Û—L˜A½”‚ğæ“¾ Å‰‚É‚P˜A½‚¾‚¯F‚ğw’è‚µ‚Ä‚· (‘¬“x‚Ì‚½‚ßtryChain‚ÉŠÜ‚Ü‚È‚¢)
+//	ä¿æœ‰é€£é–æ•°ã‚’å–å¾— æœ€åˆã«ï¼‘é€£é–ã ã‘è‰²ã‚’æŒ‡å®šã—ã¦è©¦ã™ (é€Ÿåº¦ã®ãŸã‚tryChainã«å«ã¾ãªã„)
 int Thinking::specifiedChain(int color) {
 	__m128i colorReg = _mm_setzero_si128();
 	__m128i tmpRegV;
@@ -356,88 +356,88 @@ int Thinking::specifiedChain(int color) {
 	uint64_t* fieldPtr2 = (uint64_t*)&field_image[2];
 	uint64_t* fieldPtr3 = (uint64_t*)&field_image[3];
 	uint64_t* vanishPtr = (uint64_t*)&vanish;
-	//˜A½”
+	//é€£é–æ•°
 	int count = 0;
 
-	//13’i–Ú‚Ìî•ñ‚ğ•Û‘¶
-	//‚»‚ÌŒãAƒtƒB[ƒ‹ƒh(1`12’i–Ú)ˆÈŠO‚Ìî•ñ‚ğÁ‚·
+	//13æ®µç›®ã®æƒ…å ±ã‚’ä¿å­˜
+	//ãã®å¾Œã€ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰(1ï½12æ®µç›®)ä»¥å¤–ã®æƒ…å ±ã‚’æ¶ˆã™
 	thirteen[0] = _mm_and_si128(vanish13, field_image[1]);
 	thirteen[1] = _mm_and_si128(vanish13, field_image[2]);
 	thirteen[2] = _mm_and_si128(vanish13, field_image[3]);
 	field_image[1] = _mm_and_si128(vanishOther, field_image[1]);
 	field_image[2] = _mm_and_si128(vanishOther, field_image[2]);
 	field_image[3] = _mm_and_si128(vanishOther, field_image[3]);
-	//	F‚ğw’è‚µ‚Ä”­‰Î‚ğ1“x‚¾‚¯‚·
+	//	è‰²ã‚’æŒ‡å®šã—ã¦ç™ºç«ã‚’1åº¦ã ã‘è©¦ã™
 	switch (color) {
-	case 1: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[2], field_image[1])); break;//Ô
-	case 2: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[1], field_image[2])); break;//—Î
-	case 3: colorReg = _mm_andnot_si128(field_image[3], _mm_and_si128(field_image[1], field_image[2])); break;//Â
-	case 4: colorReg = _mm_andnot_si128(field_image[2], _mm_andnot_si128(field_image[1], field_image[3])); break;//‰©F
-	//case 5: colorReg = _mm_andnot_si128(field_image[2], _mm_and_si128(field_image[1], field_image[3])); break; //‡
+	case 1: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[2], field_image[1])); break;//èµ¤
+	case 2: colorReg = _mm_andnot_si128(field_image[3], _mm_andnot_si128(field_image[1], field_image[2])); break;//ç·‘
+	case 3: colorReg = _mm_andnot_si128(field_image[3], _mm_and_si128(field_image[1], field_image[2])); break;//é’
+	case 4: colorReg = _mm_andnot_si128(field_image[2], _mm_andnot_si128(field_image[1], field_image[3])); break;//é»„è‰²
+	//case 5: colorReg = _mm_andnot_si128(field_image[2], _mm_and_si128(field_image[1], field_image[3])); break; //ç´«
 	}
 
-	//1˜AŒ‹‚Ìƒcƒ‚‚ğ’T‚·
-	//  ã‰º‚Ç‚¿‚ç‚©‚É“¯‚¶F‚ª‚ ‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-	//	tmpRegV : 1‚Âã‚É‚¸‚ç‚µ‚½ƒtƒB[ƒ‹ƒh‚Æand@-> 1‚È‚ç‰º‚Éƒcƒ‚‚ª‚ ‚é‚±‚Æ‚É‚È‚é
-	//	sheedV	: tmpRegV‚ÌƒtƒB[ƒ‹ƒh‚ğ‰º‚É‚¸‚ç‚µ‚Äxor -> ‰º‚Ì‚â‚Â‚à1‚ğ—§‚Ä‚é (¶‰E‚É‚àŒq‚ª‚Á‚Ä‚¢‚é‚Ì‚Í0‚É–ß‚é)
+	//1é€£çµã®ãƒ„ãƒ¢ã‚’æ¢ã™
+	//  ä¸Šä¸‹ã©ã¡ã‚‰ã‹ã«åŒã˜è‰²ãŒã‚ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+	//	tmpRegV : 1ã¤ä¸Šã«ãšã‚‰ã—ãŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨andã€€-> 1ãªã‚‰ä¸‹ã«ãƒ„ãƒ¢ãŒã‚ã‚‹ã“ã¨ã«ãªã‚‹
+	//	sheedV	: tmpRegVã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ä¸‹ã«ãšã‚‰ã—ã¦xor -> ä¸‹ã®ã‚„ã¤ã‚‚1ã‚’ç«‹ã¦ã‚‹ (å·¦å³ã«ã‚‚ç¹‹ãŒã£ã¦ã„ã‚‹ã®ã¯0ã«æˆ»ã‚‹)
 	tmpRegV = _mm_and_si128(colorReg, _mm_slli_epi16(colorReg, 1));
 	sheedV = _mm_xor_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1));
-	//			ªxor‚Í¶‰E•Ğ•û‚¾‚¯Œq‚ª‚Á‚Ä‚¢‚é					
-	//	¶‰E‚Ç‚¿‚ç‚©‚É“¯‚¶F‚ª‚ ‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-	//	tmpRegH : 1‚Â¶‚É‚¸‚ç‚µ‚½ƒtƒB[ƒ‹ƒh‚Æand -> 1‚È‚ç‰E‚Éƒcƒ‚‚ª‚ ‚é‚±‚Æ‚É‚È‚é
-	//	sheedH	: tmpRegH‚ÌƒtƒB[ƒ‹ƒh‚ğ¶‚É‚¸‚ç‚µ‚Äxor -> ‰E‚Ì‚â‚Â‚à1‚ğ—§‚Ä‚é (¶‰E‚É‚àŒq‚ª‚Á‚Ä‚¢‚é‚Ì‚Í0‚É–ß‚é)
+	//			â†‘xorã¯å·¦å³ç‰‡æ–¹ã ã‘ç¹‹ãŒã£ã¦ã„ã‚‹					
+	//	å·¦å³ã©ã¡ã‚‰ã‹ã«åŒã˜è‰²ãŒã‚ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+	//	tmpRegH : 1ã¤å·¦ã«ãšã‚‰ã—ãŸãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã¨and -> 1ãªã‚‰å³ã«ãƒ„ãƒ¢ãŒã‚ã‚‹ã“ã¨ã«ãªã‚‹
+	//	sheedH	: tmpRegHã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’å·¦ã«ãšã‚‰ã—ã¦xor -> å³ã®ã‚„ã¤ã‚‚1ã‚’ç«‹ã¦ã‚‹ (å·¦å³ã«ã‚‚ç¹‹ãŒã£ã¦ã„ã‚‹ã®ã¯0ã«æˆ»ã‚‹)
 	tmpRegH = _mm_and_si128(colorReg, _mm_slli_si128(colorReg, 2));
 	sheedH = _mm_xor_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2));
-	//@˜AŒ‹1‚Ìƒcƒ‚ˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-	//	¶‰E‚Ç‚¿‚ç‚©@‚©@ã‰º‚Ç‚¿‚ç‚©@‚¾‚¯ƒrƒbƒg‚ğ—§‚Ä‚é
+	//ã€€é€£çµ1ã®ãƒ„ãƒ¢ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+	//	å·¦å³ã©ã¡ã‚‰ã‹ã€€ã‹ã€€ä¸Šä¸‹ã©ã¡ã‚‰ã‹ã€€ã ã‘ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
 	linkOne = _mm_xor_si128(sheedV, sheedH);
 
 
-	//  2˜AŒ‹‚Ìƒcƒ‚‚ğ’T‚·
-	//	2‚Â“¯‚¶F‚ª˜AŒ‹‚µ‚Ä‚¢‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é@i3‚Â‚Íœ‚­j ğŒ‚Í«‚Ì3‚Â
-	//						c‰¡—¼•ûŒq‚ª‚Á‚Ä‚¢‚é			or			‰¡‚ªŒq‚ª‚ç‚¸ã‰º—¼•û‚ÉŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â										or					c‚ªŒq‚ª‚ç‚¸¶‰E—¼•û‚ÉŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â				
+	//  2é€£çµã®ãƒ„ãƒ¢ã‚’æ¢ã™
+	//	2ã¤åŒã˜è‰²ãŒé€£çµã—ã¦ã„ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹ã€€ï¼ˆ3ã¤ã¯é™¤ãï¼‰ æ¡ä»¶ã¯â†“ã®3ã¤
+	//						ç¸¦æ¨ªä¸¡æ–¹ç¹‹ãŒã£ã¦ã„ã‚‹			or			æ¨ªãŒç¹‹ãŒã‚‰ãšä¸Šä¸‹ä¸¡æ–¹ã«ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤										or					ç¸¦ãŒç¹‹ãŒã‚‰ãšå·¦å³ä¸¡æ–¹ã«ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤				
 	linkTwo = _mm_or_si128(_mm_and_si128(sheedV, sheedH), _mm_or_si128(_mm_andnot_si128(sheedV, _mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2))), _mm_andnot_si128(sheedH, _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1)))));
-	//																								ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é														ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é
+	//																								â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹														â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹
 
 
-	//  3˜AŒ‹ˆÈã‚Ìƒcƒ‚‚ğ’T‚·
-	//	3‚ÂˆÈã“¯‚¶F‚ª˜AŒ‹‚µ‚Ä‚¢‚éƒcƒ‚‚ª‘¶İ‚·‚éˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é																			
-	//						4˜AŒ‹‚ÌğŒ¨				iã‰ºŒq‚ª‚Á‚Ä‚¢‚é@@@@@@@@@‚©‚Â@@@@@@@¶‰EŒq‚ª‚Á‚Ä‚¢‚é@						or	¨3˜AŒ‹‚ÌğŒ@(ã‰º—¼•û‚ªŒq‚ª‚Á‚Ä‚é and   ¶‰E‚Ç‚¿‚ç‚©‚ÉŒq‚ª‚Á‚Ä‚é)				or		(¶‰E—¼•û‚ÉŒq‚ª‚Á‚Ä‚¢‚é   and  ã‰º‚Ç‚¿‚ç‚©‚ÉŒq‚ª‚Á‚Ä‚¢‚é)															
+	//  3é€£çµä»¥ä¸Šã®ãƒ„ãƒ¢ã‚’æ¢ã™
+	//	3ã¤ä»¥ä¸ŠåŒã˜è‰²ãŒé€£çµã—ã¦ã„ã‚‹ãƒ„ãƒ¢ãŒå­˜åœ¨ã™ã‚‹ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹																			
+	//						4é€£çµã®æ¡ä»¶â†’				ï¼ˆä¸Šä¸‹ç¹‹ãŒã£ã¦ã„ã‚‹ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã€€ã‹ã¤ã€€ã€€ã€€ã€€ã€€ã€€ã€€å·¦å³ç¹‹ãŒã£ã¦ã„ã‚‹ã€€						or	â†’3é€£çµã®æ¡ä»¶ã€€(ä¸Šä¸‹ä¸¡æ–¹ãŒç¹‹ãŒã£ã¦ã‚‹ and   å·¦å³ã©ã¡ã‚‰ã‹ã«ç¹‹ãŒã£ã¦ã‚‹)				or		(å·¦å³ä¸¡æ–¹ã«ç¹‹ãŒã£ã¦ã„ã‚‹   and  ä¸Šä¸‹ã©ã¡ã‚‰ã‹ã«ç¹‹ãŒã£ã¦ã„ã‚‹)															
 	sheed = _mm_or_si128(_mm_and_si128(_mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2)), _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1))), _mm_or_si128(_mm_and_si128(sheedV, _mm_and_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2))), _mm_and_si128(sheedH, _mm_and_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1)))));
-	//											ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é								ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é																	ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é														ªand‚Í—¼•û‚Â‚È‚ª‚Á‚Ä‚é
+	//											â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹								â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹																	â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹														â†‘andã¯ä¸¡æ–¹ã¤ãªãŒã£ã¦ã‚‹
 
 
 
-	//	ƒV[ƒhiÁ‚¦‚é‚«‚Á‚©‚¯j‚ÌˆÊ’u‚Éƒrƒbƒg‚ğ—§‚Ä‚é
-	//	ğŒ = ˜AŒ‹3ˆÈã‚Ì“z or —×Ú‚Ì˜AŒ‹‚ª2ˆÈã‚Ì˜AŒ‹2‚Ì“z
+	//	ã‚·ãƒ¼ãƒ‰ï¼ˆæ¶ˆãˆã‚‹ãã£ã‹ã‘ï¼‰ã®ä½ç½®ã«ãƒ“ãƒƒãƒˆã‚’ç«‹ã¦ã‚‹
+	//	æ¡ä»¶ = é€£çµ3ä»¥ä¸Šã®å¥´ or éš£æ¥ã®é€£çµãŒ2ä»¥ä¸Šã®é€£çµ2ã®å¥´
 	//	
-	//	˜AŒ‹2ˆÈã‚Ì‚â‚Â
+	//	é€£çµ2ä»¥ä¸Šã®ã‚„ã¤
 	linkTwo = _mm_or_si128(sheed, linkTwo);
 	//										   
-	//	tmpRegV : 2˜AŒ‹ˆÈã‚ª¶‰E‚Ì‚Ç‚¿‚ç‚©‚ ‚é‚¢‚Í—¼•ûŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â
+	//	tmpRegV : 2é€£çµä»¥ä¸ŠãŒå·¦å³ã®ã©ã¡ã‚‰ã‹ã‚ã‚‹ã„ã¯ä¸¡æ–¹ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤
 	tmpRegV = _mm_and_si128(linkTwo, _mm_slli_epi16(linkTwo, 1));
 	tmpRegV = _mm_or_si128(tmpRegV, _mm_srli_epi16(tmpRegV, 1));
-	//			ªor‚Í­‚È‚­‚Æ‚à•Ğ•û‚ÍŒq‚ª‚Á‚Ä‚é
-	//	tmpRegH : 2˜AŒ‹ˆÈã‚ªã‰º‚Ì‚Ç‚¿‚ç‚©‚ ‚é‚¢‚Í—¼•ûŒq‚ª‚Á‚Ä‚¢‚é‚â‚Â 
+	//			â†‘orã¯å°‘ãªãã¨ã‚‚ç‰‡æ–¹ã¯ç¹‹ãŒã£ã¦ã‚‹
+	//	tmpRegH : 2é€£çµä»¥ä¸ŠãŒä¸Šä¸‹ã®ã©ã¡ã‚‰ã‹ã‚ã‚‹ã„ã¯ä¸¡æ–¹ç¹‹ãŒã£ã¦ã„ã‚‹ã‚„ã¤ 
 	tmpRegH = _mm_and_si128(linkTwo, _mm_slli_si128(linkTwo, 2));
 	tmpRegH = _mm_or_si128(tmpRegH, _mm_srli_si128(tmpRegH, 2));
-	//			ªor‚Í­‚È‚­‚Æ‚à•Ğ•û‚ÍŒq‚ª‚Á‚Ä‚é
-	//	ƒV[ƒh‚Í			3˜AŒ‹ˆÈã	or	2˜AŒ‹ˆÈã‚µ‚Ä‚¢‚éƒcƒ‚‚ª—×‚è‡‚Á‚Ä‚¢‚éêŠ
+	//			â†‘orã¯å°‘ãªãã¨ã‚‚ç‰‡æ–¹ã¯ç¹‹ãŒã£ã¦ã‚‹
+	//	ã‚·ãƒ¼ãƒ‰ã¯			3é€£çµä»¥ä¸Š	or	2é€£çµä»¥ä¸Šã—ã¦ã„ã‚‹ãƒ„ãƒ¢ãŒéš£ã‚Šåˆã£ã¦ã„ã‚‹å ´æ‰€
 	sheed = _mm_or_si128(sheed, _mm_or_si128(tmpRegV, tmpRegH));
 
 
 
-	//	ƒV[ƒh‚É—×Ú‚·‚é˜AŒ‹1‚àÁ‚¦‚é  _mm_xor_si128(sheedV, sheedH)‚Í˜AŒ‹1@iƒV[ƒh‚ğã‰º¶‰E‚É‚¸‚ç‚µ‚Ä˜AŒ‹‚P‚ÌˆÊ’u‚Æand‚ğ‚Æ‚éj
-	//	tmpRegV : ƒV[ƒh + ƒV[ƒh‚Ìã‰º‚É˜AŒ‹‚µ‚Ä‚¢‚é˜AŒ‹1‚Ìƒcƒ‚‚ÌˆÊ’u		«ƒV[ƒh‚ğã‚É‚¸‚ç‚·													«ƒV[ƒh‚ğ‰º‚É‚¸‚ç‚·
-	//	tmpRegH : ƒV[ƒh + ƒV[ƒh‚Ì¶‰E‚É˜AŒ‹‚µ‚Ä‚¢‚é˜AŒ‹1‚Ìƒcƒ‚‚ÌˆÊ’u		«ƒV[ƒh‚ğ¶‚É‚¸‚ç‚·													«ƒV[ƒh‚ğ‰E‚É‚¸‚ç‚·
+	//	ã‚·ãƒ¼ãƒ‰ã«éš£æ¥ã™ã‚‹é€£çµ1ã‚‚æ¶ˆãˆã‚‹  _mm_xor_si128(sheedV, sheedH)ã¯é€£çµ1ã€€ï¼ˆã‚·ãƒ¼ãƒ‰ã‚’ä¸Šä¸‹å·¦å³ã«ãšã‚‰ã—ã¦é€£çµï¼‘ã®ä½ç½®ã¨andã‚’ã¨ã‚‹ï¼‰
+	//	tmpRegV : ã‚·ãƒ¼ãƒ‰ + ã‚·ãƒ¼ãƒ‰ã®ä¸Šä¸‹ã«é€£çµã—ã¦ã„ã‚‹é€£çµ1ã®ãƒ„ãƒ¢ã®ä½ç½®		â†“ã‚·ãƒ¼ãƒ‰ã‚’ä¸Šã«ãšã‚‰ã™													â†“ã‚·ãƒ¼ãƒ‰ã‚’ä¸‹ã«ãšã‚‰ã™
+	//	tmpRegH : ã‚·ãƒ¼ãƒ‰ + ã‚·ãƒ¼ãƒ‰ã®å·¦å³ã«é€£çµã—ã¦ã„ã‚‹é€£çµ1ã®ãƒ„ãƒ¢ã®ä½ç½®		â†“ã‚·ãƒ¼ãƒ‰ã‚’å·¦ã«ãšã‚‰ã™													â†“ã‚·ãƒ¼ãƒ‰ã‚’å³ã«ãšã‚‰ã™
 	tmpRegV = _mm_or_si128(_mm_and_si128(linkOne, _mm_slli_epi16(sheed, 1)), _mm_and_si128(linkOne, _mm_srli_epi16(sheed, 1)));
 	tmpRegH = _mm_or_si128(_mm_and_si128(linkOne, _mm_slli_si128(sheed, 2)), _mm_and_si128(linkOne, _mm_srli_si128(sheed, 2)));
 	sheed = _mm_or_si128(sheed, _mm_or_si128(tmpRegV, tmpRegH));
-	vanish = _mm_or_si128(sheed, vanish); //4FŒ©‚ÄÅI“I‚É‚ÍÁ‚¦‚éˆÊ’u‘S‚Ä‚P‚ª—§‚Á‚Ä‚¢‚é
+	vanish = _mm_or_si128(sheed, vanish); //4è‰²è¦‹ã¦æœ€çµ‚çš„ã«ã¯æ¶ˆãˆã‚‹ä½ç½®å…¨ã¦ï¼‘ãŒç«‹ã£ã¦ã„ã‚‹
 
-	//Á‚·‚à‚Ì‚ª‚È‚¯‚ê‚Î0‚ğ•Ô‚·
+	//æ¶ˆã™ã‚‚ã®ãŒãªã‘ã‚Œã°0ã‚’è¿”ã™
 	if ((vanishPtr[0] | vanishPtr[1]) == 0) {
-		//13’i–Ú•œŠˆ
+		//13æ®µç›®å¾©æ´»
 		field_image[1] = _mm_or_si128(thirteen[0], field_image[1]);
 		field_image[2] = _mm_or_si128(thirteen[1], field_image[2]);
 		field_image[3] = _mm_or_si128(thirteen[2], field_image[3]);
@@ -445,14 +445,14 @@ int Thinking::specifiedChain(int color) {
 	}
 	count++;
 
-	//”­‰Î‚·‚é
+	//ç™ºç«ã™ã‚‹
 	pdepMask = _mm_setr_epi16(mask[__popcnt16(cnt[0])], mask[__popcnt16(cnt[1])], mask[__popcnt16(cnt[2])], mask[__popcnt16(cnt[3])], mask[__popcnt16(cnt[4])], mask[__popcnt16(cnt[5])], mask[__popcnt16(cnt[6])], mask[__popcnt16(cnt[7])]);
 	pextMask = _mm_xor_si128(vanish, _mm_set_epi64x(0xffffffffffffffff, 0xffffffffffffffff));
 	field_image[1] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr1[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr1[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 	field_image[2] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr2[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr2[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 	field_image[3] = _mm_set_epi64x(_pdep_u64(_pext_u64(fieldPtr3[1], pextMaskPtr[1]), pdepMaskPtr[1]), _pdep_u64(_pext_u64(fieldPtr3[0], pextMaskPtr[0]), pdepMaskPtr[0]));
 
-	//13’i–Ú•œŠˆ
+	//13æ®µç›®å¾©æ´»
 	field_image[1] = _mm_or_si128(thirteen[0], field_image[1]);
 	field_image[2] = _mm_or_si128(thirteen[1], field_image[2]);
 	field_image[3] = _mm_or_si128(thirteen[2], field_image[3]);
@@ -467,12 +467,12 @@ int Thinking::specifiedChain(int color) {
 	return count;
 }
 
-//	•]‰¿’l‚ğŒvZ‚·‚é
+//	è©•ä¾¡å€¤ã‚’è¨ˆç®—ã™ã‚‹
 int Thinking::evalScore(int chainMax_ready, int fireHeight) {
 
-	int evalVal; //–ß‚è’lA•]‰¿’l
-	int heightAve; //‚‚³‚Ì•½‹Ï
-	int heightValue; //‚‚³‚Ìƒoƒ‰ƒ“ƒX•]‰¿’lŠi”[
+	int evalVal; //æˆ»ã‚Šå€¤ã€è©•ä¾¡å€¤
+	int heightAve; //é«˜ã•ã®å¹³å‡
+	int heightValue; //é«˜ã•ã®ãƒãƒ©ãƒ³ã‚¹è©•ä¾¡å€¤æ ¼ç´
 
 	heightAve = (fieldHeight_image[0] + fieldHeight_image[1] + fieldHeight_image[2] + fieldHeight_image[3] + fieldHeight_image[4] + fieldHeight_image[5]) / 6;
 	heightValue = (heightAve + 2 - fieldHeight_image[0]) * (heightAve + 2 - fieldHeight_image[0]);
@@ -482,7 +482,7 @@ int Thinking::evalScore(int chainMax_ready, int fireHeight) {
 	heightValue += (heightAve - fieldHeight_image[4]) * (heightAve - fieldHeight_image[4]);
 	heightValue += (heightAve + 2 - fieldHeight_image[5]) * (heightAve + 2 - fieldHeight_image[5]);
 
-	//•]‰¿’lÀŒvZ•”•ªid‚İ‚Í“K“–j
+	//è©•ä¾¡å€¤å®Ÿè¨ˆç®—éƒ¨åˆ†ï¼ˆé‡ã¿ã¯é©å½“ï¼‰
 	evalVal = -heightValue * field_W;
 	evalVal += chainMax_ready * (chain_W * (heightAve + 1) / 10) + (fireHeight_W * fireHeight);
 	return evalVal;
@@ -490,55 +490,55 @@ int Thinking::evalScore(int chainMax_ready, int fireHeight) {
 
 
 
-//Às•”•ª
+//å®Ÿè¡Œéƒ¨åˆ†
 void Thinking::thinking(int deep) {
 
-	//	ğŒ
-	//	fiele_real(ÀÛ‚ÌƒtƒB[ƒ‹ƒhî•ñ)‚ÍƒZƒbƒgÏ‚İ
-	//	nextTsumoiÀÛ‚ÌƒtƒB[ƒ‹ƒh‚ÌŸ‚Ìƒcƒ‚A‚»‚ÌŸ‚Ìƒcƒ‚j‚ÍƒZƒbƒgÏ‚İ
-	//  fieldHeigh_realiÀÛ‚ÌƒtƒB[ƒ‹ƒh‚Ì‚‚³î•ñj‚ÍƒZƒbƒgÏ‚İ
+	//	æ¡ä»¶
+	//	field_real(å®Ÿéš›ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æƒ…å ±)ã¯ã‚»ãƒƒãƒˆæ¸ˆã¿
+	//	nextTsumoï¼ˆå®Ÿéš›ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®æ¬¡ã®ãƒ„ãƒ¢ã€ãã®æ¬¡ã®ãƒ„ãƒ¢ï¼‰ã¯ã‚»ãƒƒãƒˆæ¸ˆã¿
+	//  fieldHeigh_realï¼ˆå®Ÿéš›ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•æƒ…å ±ï¼‰ã¯ã‚»ãƒƒãƒˆæ¸ˆã¿
 
-	//	•Ï”İ’è
-	//vectorŠÖŒW
+	//	å¤‰æ•°è¨­å®š
+	//vectoré–¢ä¿‚
 	std::vector<value> vals;
 	vals.reserve(10000);
 	value val;
 
-	int turn = 0; //imageã‚Å‰½ƒ^[ƒ“–Ú‚©‚ğŠi”[
-	int currentTsumo[2];  //‚±‚Ìƒ^[ƒ“‚É—‚Æ‚·ƒcƒ‚‚ğŠi”[
+	int turn = 0; //imageä¸Šã§ä½•ã‚¿ãƒ¼ãƒ³ç›®ã‹ã‚’æ ¼ç´
+	int currentTsumo[2];  //ã“ã®ã‚¿ãƒ¼ãƒ³ã«è½ã¨ã™ãƒ„ãƒ¢ã‚’æ ¼ç´
 	int chain;
-	int chainMax = 0; //–ß‚è’l‚İ‚½‚¢‚È‚à‚Ì
+	int chainMax = 0; //æˆ»ã‚Šå€¤ã¿ãŸã„ãªã‚‚ã®
 	int chainMax_ready;
-	int first = 0;  //–ß‚è’l‚İ‚½‚¢‚È‚à‚Ì
-	int fireHeight; //”­‰Î“_‚Ì‚‚³ - •]‰¿—p 
+	int first = 0;  //æˆ»ã‚Šå€¤ã¿ãŸã„ãªã‚‚ã®
+	int fireHeight; //ç™ºç«ç‚¹ã®é«˜ã• - è©•ä¾¡ç”¨ 
 
-	int size;	//vals‚ÌƒTƒCƒY‚ğ•Û‘¶
+	int size;	//valsã®ã‚µã‚¤ã‚ºã‚’ä¿å­˜
 
-	//‰Šúİ’è
+	//åˆæœŸè¨­å®š
 
 	isDie = false;
 
-	//***************ŠJn******************
+	//***************é–‹å§‹******************
 	//	
-	//  ƒcƒ‚‚ğƒ‰ƒ“ƒ_ƒ€‚Éì¬‚µ‚Ä‚Pè–Ú‚Æ‚Qè–Ú‚ÍÀÛ‚Ì‚É‡‚í‚¹‚é
-	//	‚»‚ÌŒã‚±‚Ìƒ^[ƒ“‚É—‚Æ‚·ƒcƒ‚‚ğŠi”[
+	//  ãƒ„ãƒ¢ã‚’ãƒ©ãƒ³ãƒ€ãƒ ã«ä½œæˆã—ã¦ï¼‘æ‰‹ç›®ã¨ï¼’æ‰‹ç›®ã¯å®Ÿéš›ã®ã«åˆã‚ã›ã‚‹
+	//	ãã®å¾Œã“ã®ã‚¿ãƒ¼ãƒ³ã«è½ã¨ã™ãƒ„ãƒ¢ã‚’æ ¼ç´
 	makeTsumo();
 	currentTsumo[0] = tsumo[0];
 	currentTsumo[1] = tsumo[1];
 	// 
-	//  ƒcƒ‚‚ğÀÛ‚É—‚Æ‚·‚±‚Æ‚ª‚Å‚«‚éêŠ‚Ì‚İ‚Éstart‚Æend‚ğİ’è‚·‚é
-	//	ƒtƒB[ƒ‹ƒh‚Ì‚‚³‚É‰‚¶‚Ä‚Pè’u‚­
+	//  ãƒ„ãƒ¢ã‚’å®Ÿéš›ã«è½ã¨ã™ã“ã¨ãŒã§ãã‚‹å ´æ‰€ã®ã¿ã«startã¨endã‚’è¨­å®šã™ã‚‹
+	//	ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã®é«˜ã•ã«å¿œã˜ã¦ï¼‘æ‰‹ç½®ã
 	int start;
 	int end;
 	getFallPosition(start, end, fieldHeight_real);
 
-	//	ƒcƒ‚‚ğ~‚ç‚·‚Ì‚Ég‚¤‚½‚ßA‚‚³‚ğƒRƒs[‚µ‚Ä‚¨‚­
+	//	ãƒ„ãƒ¢ã‚’é™ã‚‰ã™ã®ã«ä½¿ã†ãŸã‚ã€é«˜ã•ã‚’ã‚³ãƒ”ãƒ¼ã—ã¦ãŠã
 	memcpy(fieldHeight_image, fieldHeight_real, sizeof(fieldHeight_real));
 
 
-	//	start, end‚É‰‚¶‚Äƒcƒ‚‚ğ‚P‚Â—‚Æ‚·‚ğŒJ‚è•Ô‚·
-	// ‚Pè—‚Æ‚·
-	//	Á‚¦‚é‚È‚ç˜A½”‚ğŠm”F
+	//	start, endã«å¿œã˜ã¦ãƒ„ãƒ¢ã‚’ï¼‘ã¤è½ã¨ã™ã‚’ç¹°ã‚Šè¿”ã™
+	// ï¼‘æ‰‹è½ã¨ã™
+	//	æ¶ˆãˆã‚‹ãªã‚‰é€£é–æ•°ã‚’ç¢ºèª
 	for (; start <= end; start++) {
 		memcpy(field_image, field_real, sizeof(field_real));
 
@@ -546,14 +546,14 @@ void Thinking::thinking(int deep) {
 		chain = tryChain();
 
 
-		//	‚Ü‚¸22èvals‚ÉŠi”[‚·‚é
-		//	12’i–Ú‚Éƒcƒ‚‚ª‚ ‚Á‚½‚ç€‚ñ‚Å‚¢‚é‚Ì‚ÅƒXƒLƒbƒv
-		if (_mm_testz_si128(field_image[0], die) == 1) {//_mm_testz_si128 => ‘S‚Ä0‚Ìê‡‚ª1
+		//	ã¾ãš22æ‰‹valsã«æ ¼ç´ã™ã‚‹
+		//	12æ®µç›®ã«ãƒ„ãƒ¢ãŒã‚ã£ãŸã‚‰æ­»ã‚“ã§ã„ã‚‹ã®ã§ã‚¹ã‚­ãƒƒãƒ—
+		if (_mm_testz_si128(field_image[0], die) == 1) {//_mm_testz_si128 => å…¨ã¦0ã®å ´åˆãŒ1
 			memcpy(val.reg, field_image, sizeof(field_image));
 			val.first = start;
 			vals.emplace_back(val);
 
-			//Å‘å˜A½î•ñ‚ğXV
+			//æœ€å¤§é€£é–æƒ…å ±ã‚’æ›´æ–°
 			if (chainMax < chain)
 			{
 				chainMax = chain;
@@ -566,54 +566,54 @@ void Thinking::thinking(int deep) {
 
 	}
 
-	//‚±‚±‚Åvals‚ª‚È‚¢ê‡‚Í’u‚­‚Æ‚±‚ë‚ª‚È‚¢@=>@Ï‚İ‚È‚Ì‚ÅI‚í‚é
+	//ã“ã“ã§valsãŒãªã„å ´åˆã¯ç½®ãã¨ã“ã‚ãŒãªã„ã€€=>ã€€ç©ã¿ãªã®ã§çµ‚ã‚ã‚‹
 	if (size = vals.size() == 0) {
 		isDie = true;
 		return;
 	}
 
-	//	‚±‚±‚©‚ç‚³‚ç‚É‚Pèi‚ß‚é‚ğŒJ‚è•Ô‚·(vals‚Í*22‚É‘‚¦‚é‚Ì‚ÅRANGE•‚Å—}‚¦‚éƒr[ƒ€ƒT[ƒ`’Tõ‚ğs‚¤)
-	//	ˆø”‚Ìdeep‰ñ”•ª’Tõ‚·‚é
-	turn++; //‚Pè‚Í‚·‚Å‚Éi‚ñ‚¾‚Ì‚Å2è–Ú‚©‚ç
+	//	ã“ã“ã‹ã‚‰ã•ã‚‰ã«ï¼‘æ‰‹é€²ã‚ã‚‹ã‚’ç¹°ã‚Šè¿”ã™(valsã¯*22ã«å¢—ãˆã‚‹ã®ã§RANGEå¹…ã§æŠ‘ãˆã‚‹ãƒ“ãƒ¼ãƒ ã‚µãƒ¼ãƒæ¢ç´¢ã‚’è¡Œã†)
+	//	å¼•æ•°ã®deepå›æ•°åˆ†æ¢ç´¢ã™ã‚‹
+	turn++; //ï¼‘æ‰‹ã¯ã™ã§ã«é€²ã‚“ã ã®ã§2æ‰‹ç›®ã‹ã‚‰
 	for (; turn < deep; turn++) {
 
-		//	vals‚ÌƒTƒCƒY‚ğæ“¾
+		//	valsã®ã‚µã‚¤ã‚ºã‚’å–å¾—
 		size = vals.size();
 
-		//	ƒJƒŒƒ“ƒgƒcƒ‚‚ğXV
+		//	ã‚«ãƒ¬ãƒ³ãƒˆãƒ„ãƒ¢ã‚’æ›´æ–°
 		currentTsumo[0] = tsumo[(turn * 2) % 128];
 		currentTsumo[1] = tsumo[(turn * 2 + 1) % 128];
 
-		//	vals‚ğ‘S‘–¸‚µ‚Ä‚»‚ê‚ç‘S‚Ä‚ğ‚Pèi‚ß‚é (Å‘åRANGE + 22èŒ©‚é‚±‚Æ‚É‚È‚é)
+		//	valsã‚’å…¨èµ°æŸ»ã—ã¦ãã‚Œã‚‰å…¨ã¦ã‚’ï¼‘æ‰‹é€²ã‚ã‚‹ (æœ€å¤§RANGE + 22æ‰‹è¦‹ã‚‹ã“ã¨ã«ãªã‚‹)
 		for (int range = 0; range < size; ++range) {
 
-			//	è‚ğ’u‚­‘O‚ÌƒtƒB[ƒ‹ƒhî•ñ‚ğƒRƒs[‚É‚½‚¹‚é
+			//	æ‰‹ã‚’ç½®ãå‰ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æƒ…å ±ã‚’ã‚³ãƒ”ãƒ¼ã«æŒãŸã›ã‚‹
 			memcpy(field_cp, vals[range].reg, sizeof(vals[range].reg));
 
 
-			//	‚‚³‚ğƒRƒs[‚É‚½‚¹‚é
+			//	é«˜ã•ã‚’ã‚³ãƒ”ãƒ¼ã«æŒãŸã›ã‚‹
 			setHeight(field_cp[0], fieldHeight_cp);
 
 
-			//	start, end‚ğæ“¾
+			//	start, endã‚’å–å¾—
 			getFallPosition(start, end, fieldHeight_cp);
 
 
-			//	Å‘å‚Q‚Qƒpƒ^[ƒ“’u‚­
-			//	˜A½‚ª‚ ‚ê‚Î”­‰Î‚·‚é
-			for (; start <= end; ++start) { //va;ue.reg‚©‚ç•œŒ³H
-				//	•]‰¿‚æ‚¤‚Ì\‘¢‘Ì‚É’l‚ğ•Û‘¶
-				val.first = vals[range].first; //‰è
+			//	æœ€å¤§ï¼’ï¼’ãƒ‘ã‚¿ãƒ¼ãƒ³ç½®ã
+			//	é€£é–ãŒã‚ã‚Œã°ç™ºç«ã™ã‚‹
+			for (; start <= end; ++start) { //va;ue.regã‹ã‚‰å¾©å…ƒï¼Ÿ
+				//	è©•ä¾¡ã‚ˆã†ã®æ§‹é€ ä½“ã«å€¤ã‚’ä¿å­˜
+				val.first = vals[range].first; //åˆæ‰‹
 
-				//	è‚ğ’u‚­‘O‚ÌƒtƒB[ƒ‹ƒh‚ğƒZƒbƒg‚·‚é
-				//	‚‚³‚àƒZƒbƒg‚·‚é
+				//	æ‰‹ã‚’ç½®ãå‰ã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ã‚»ãƒƒãƒˆã™ã‚‹
+				//	é«˜ã•ã‚‚ã‚»ãƒƒãƒˆã™ã‚‹
 				memcpy(field_image, field_cp, sizeof(field_cp));
 				memcpy(fieldHeight_image, fieldHeight_cp, sizeof(fieldHeight_cp));
 
 
-				//	ˆêè’u‚¢‚Ä”­‰Îo—ˆ‚½‚ç‚·‚é
-				//	Å‘å˜A½”‚Ìî•ñ‚ğ•Û
-				//	val‚É‚Pè‚¨‚¢‚½Œã‚ÌƒtƒB[ƒ‹ƒhî•ñ‚ğ‚à‚½‚¹‚é
+				//	ä¸€æ‰‹ç½®ã„ã¦ç™ºç«å‡ºæ¥ãŸã‚‰ã™ã‚‹
+				//	æœ€å¤§é€£é–æ•°ã®æƒ…å ±ã‚’ä¿æŒ
+				//	valã«ï¼‘æ‰‹ãŠã„ãŸå¾Œã®ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æƒ…å ±ã‚’ã‚‚ãŸã›ã‚‹
 				fallTsumo(start, currentTsumo);
 
 				chain = tryChain();
@@ -624,85 +624,85 @@ void Thinking::thinking(int deep) {
 				memcpy(val.reg, field_image, sizeof(field_image));
 
 
-				//	”­‰ÎŒã‚Ì‚‚³‚ğæ“¾
-				//	‚SF‚Ìƒcƒ‚‚ğÅ‘å‚Q‚Âc‚É‚U—ñ‚·‚×‚Ä‚É’u‚¢‚Ä”­‰Î‚ğ‚½‚ß‚·
-				//		„‰½ŒÂ’u‚­‚©‚ğst, edŒˆ’è‚·‚é
+				//	ç™ºç«å¾Œã®é«˜ã•ã‚’å–å¾—
+				//	ï¼”è‰²ã®ãƒ„ãƒ¢ã‚’æœ€å¤§ï¼’ã¤ç¸¦ã«ï¼–åˆ—ã™ã¹ã¦ã«ç½®ã„ã¦ç™ºç«ã‚’ãŸã‚ã™
+				//		ï¼ï¼ä½•å€‹ç½®ãã‹ã‚’st, edæ±ºå®šã™ã‚‹
 				setHeight(field_image[0], fieldHeight_image);
 
-				//	€‚ñ‚Å‚¢‚é‚à‚Ì‚Í‚³‚È‚¢
+				//	æ­»ã‚“ã§ã„ã‚‹ã‚‚ã®ã¯è©¦ã•ãªã„
 				if (fieldHeight_image[2] > 11) {
 					continue;
 				}
 				int st;
 				int ed;
 				getFallPosition(st, ed, fieldHeight_image);
-				st = (st + 1) / 4; ed = ed / 4; //pattern => —ñ‚É•ÏŠ·(0`5)
+				st = (st + 1) / 4; ed = ed / 4; //pattern => åˆ—ã«å¤‰æ›(0ï½5)
 
-				//	•Û—L˜A½”‚ğ‰Šú‰»
+				//	ä¿æœ‰é€£é–æ•°ã‚’åˆæœŸåŒ–
 				chainMax_ready = 0;
 				fireHeight = 0;
-				__m128i fallPoint = Thinking::fallPoint; //(1, 1)‚ğ‰Šú‚É‚·‚é ‚±‚ê‚ğ‚P‚ê‚Â‚¸‚Â‚¸‚ç‚·
+				__m128i fallPoint = Thinking::fallPoint; //(1, 1)ã‚’åˆæœŸã«ã™ã‚‹ ã“ã‚Œã‚’ï¼‘ã‚Œã¤ãšã¤ãšã‚‰ã™
 				int fallCount;
 
-				//	ƒRƒs[‚ÉƒtƒB[ƒ‹ƒhî•ñ‚ğ‚½‚¹‚Ä‚¨‚­(–ˆ‰ñ•œŒ³‚·‚é)
+				//	ã‚³ãƒ”ãƒ¼ã«ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æƒ…å ±ã‚’æŒãŸã›ã¦ãŠã(æ¯å›å¾©å…ƒã™ã‚‹)
 				memcpy(field_cp2, field_image, sizeof(field_image));
 
-				//	ˆê—ñ‚¸‚Âƒ‹[ƒv‚Åƒcƒ‚‚ğ—‚Æ‚µ‚Ä‚¢‚­
+				//	ä¸€åˆ—ãšã¤ãƒ«ãƒ¼ãƒ—ã§ãƒ„ãƒ¢ã‚’è½ã¨ã—ã¦ã„ã
 				for (int row = st; row <= ed; ++row) {
-					if (fieldHeight_image[row] > 11) { //12ŒÂˆÈã‚È‚ç
+					if (fieldHeight_image[row] > 11) { //12å€‹ä»¥ä¸Šãªã‚‰
 						fallCount = 0;
 					}
-					else if (fieldHeight_image[row] > 10) { //11ŒÂ‚È‚ç
+					else if (fieldHeight_image[row] > 10) { //11å€‹ãªã‚‰
 						fallCount = 1;
 					}
-					else {  //10ŒÂˆÈ‰º‚È‚ç
+					else {  //10å€‹ä»¥ä¸‹ãªã‚‰
 						fallCount = 2;
 					}
 
-					//	F‚ğˆêF‚¸‚Â—‚Æ‚µ‚Ä‚¢‚­
+					//	è‰²ã‚’ä¸€è‰²ãšã¤è½ã¨ã—ã¦ã„ã
 					for (int color = 1; color <= 4; ++color) {
-						//	—‚Æ‚·”‚¾‚¯ƒ‹[ƒv‚·‚é
+						//	è½ã¨ã™æ•°ã ã‘ãƒ«ãƒ¼ãƒ—ã™ã‚‹
 						for (int cnt = 0; cnt < fallCount; ++cnt) {
-							//fallCount‚Ì”‚¾‚¯—‚Æ‚·
+							//fallCountã®æ•°ã ã‘è½ã¨ã™
 							field_image[color & 0x1] = _mm_or_si128(field_image[color & 0x1], _mm_srli_epi16(fallPoint, fieldHeight_image[row] + cnt));
 							field_image[((color >> 1) & 0x1) * 2] = _mm_or_si128(field_image[((color >> 1) & 0x1) * 2], _mm_srli_epi16(fallPoint, fieldHeight_image[row] + cnt));
 							field_image[((color >> 2) & 0x1) * 3] = _mm_or_si128(field_image[((color >> 2) & 0x1) * 3], _mm_srli_epi16(fallPoint, fieldHeight_image[row] + cnt));
 
-							//•Û—L˜A½”î•ñ‚ğŠi”[
+							//ä¿æœ‰é€£é–æ•°æƒ…å ±ã‚’æ ¼ç´
 							chain = specifiedChain(color);
 							if (chain > 0) {
-								//’®”v‚µ‚Ä‚¢‚é˜A½”‚ğ•Û
+								//è´ç‰Œã—ã¦ã„ã‚‹é€£é–æ•°ã‚’ä¿æŒ
 								if (chain > chainMax_ready) {
 									fireHeight = fieldHeight_image[row];
 									chainMax_ready = chain;
 
 								}
 
-								//1ŒÂ–Ú‚ÅÁ‚¦‚½‚ç‚QŒÂ–Ú‚ÍŒ©‚È‚­‚Ä‚¢‚¢‚Ì‚Å
+								//1å€‹ç›®ã§æ¶ˆãˆãŸã‚‰ï¼’å€‹ç›®ã¯è¦‹ãªãã¦ã„ã„ã®ã§
 								break;
 							}
 
 						}
-						//ƒtƒB[ƒ‹ƒhî•ñ‚ğ•œŒ³‚·‚é
+						//ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰æƒ…å ±ã‚’å¾©å…ƒã™ã‚‹
 						memcpy(field_image, field_cp2, sizeof(field_cp2));
 					}
-					fallPoint = _mm_srli_si128(fallPoint, 2); //Ÿ‚Ì—ñ‚Ìˆê”Ô‰º(1 + row, 1)‚Éƒrƒbƒg‚ğˆÚ“®
+					fallPoint = _mm_srli_si128(fallPoint, 2); //æ¬¡ã®åˆ—ã®ä¸€ç•ªä¸‹(1 + row, 1)ã«ãƒ“ãƒƒãƒˆã‚’ç§»å‹•
 
 				}
 
-				//****************•]‰¿’l‚ğŒvZ(”­‰Î‰Â”\‚È˜A½” + ŒE‚İ‚Ì­‚È‚³)**************************
+				//****************è©•ä¾¡å€¤ã‚’è¨ˆç®—(ç™ºç«å¯èƒ½ãªé€£é–æ•° + çªªã¿ã®å°‘ãªã•)**************************
 				val.score = evalScore(chainMax_ready, fireHeight);
 
-				//•]‰¿’l‚ğ•Û‘¶‚µ‚Ä”z—ñ‚É’Ç‰Á
+				//è©•ä¾¡å€¤ã‚’ä¿å­˜ã—ã¦é…åˆ—ã«è¿½åŠ 
 				vals.emplace_back(val);
 
 			}
 
 		}
 
-		//‚±‚±‚ÅãˆÊsizeè‚ğíœ
+		//ã“ã“ã§ä¸Šä½sizeæ‰‹ã‚’å‰Šé™¤
 		vals.erase(vals.begin(), vals.begin() + size);
-		//ãˆÊ(RANGE)è‚ğ•Û‘¶
+		//ä¸Šä½(RANGE)æ‰‹ã‚’ä¿å­˜
 		std::partial_sort(vals.begin(), vals.begin() + (vals.size() < RANGE ? vals.size() : RANGE), vals.end(), std::greater<value>());
 		vals.erase(vals.begin() + (vals.size() < RANGE ? vals.size() : RANGE), vals.end());
 	}
@@ -711,9 +711,9 @@ void Thinking::thinking(int deep) {
 }
 
 
-//*******************ƒeƒXƒg—p*****************
+//*******************ãƒ†ã‚¹ãƒˆç”¨*****************
 
-//	reg[]‚©‚çƒtƒB[ƒ‹ƒh‚ğŠm”F
+//	reg[]ã‹ã‚‰ãƒ•ã‚£ãƒ¼ãƒ«ãƒ‰ã‚’ç¢ºèª
 void Thinking::fieldCheck(__m128i reg[]) {
 	int field[8][16];
 
@@ -752,6 +752,6 @@ void Thinking::fieldCheck(__m128i reg[]) {
 		}
 	}
 
-	std::cout << "ƒ`ƒFƒbƒN" << std::endl;
+	std::cout << "ãƒã‚§ãƒƒã‚¯" << std::endl;
 
 }
