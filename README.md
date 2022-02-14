@@ -25,7 +25,7 @@
 
 https://github.com/onion2424/puyopuyo/releases
 
-ビルドする場合は"Desktop Development with C++" がインストールされているVisualStudo上でお願いします
+ビルドする場合は"Desktop Development with C++" がインストールされているVisualStudio上でお願いします
 
 # Usage
 
