@@ -41,7 +41,7 @@ https://github.com/onion2424/puyopuyo/releases
 
   仕組みが気になる方は以下の２つの素晴らしいスライドを参考にしてください
   
-  [ぷよぷよAI 人類打倒に向けて](https://www.slideshare.net/mayahjp/puyoai-gpw2015)
+  [ぷよぷよAI 人類打倒に向けて](https://www.slideshare.net/mayahjp/puyoai-gpw2015) (p24～p26)
   
   [ぷよぷよAIの新しい探索法](https://www.slideshare.net/takapt0226/ai-52214222)
 
